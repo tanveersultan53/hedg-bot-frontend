@@ -35,7 +35,7 @@
   transform: rotate(-38deg);
   transform-origin: top left;
   opacity: 0.43;
-  background: #FF7522;
+  background: #ff7522;
   box-shadow: 196.56px 196.56px 196.56px;
   border-radius: 9999px;
   filter: blur(98.28px);
@@ -51,7 +51,7 @@
   transform: rotate(121deg);
   transform-origin: top left;
   opacity: 0.43;
-  background: #FF7522;
+  background: #ff7522;
   box-shadow: 186.56px 186.56px 186.56px;
   border-radius: 9999px;
   filter: blur(93.28px);
@@ -60,8 +60,8 @@
 /* Wheel Container */
 .wheel-container {
   position: relative;
-  width: 319px;
-  height: 319px;
+  width: 340px;
+  height: 340px;
   z-index: 10;
   animation: fadeInScale 1s ease-out;
 }
@@ -80,10 +80,10 @@
 /* Static Pointer */
 .wheel-pointer-static {
   position: absolute;
-  top: -30px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 40px;
+  width: 22px;
   height: auto;
   z-index: 200;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
@@ -95,9 +95,28 @@
   height: 100%;
   border-radius: 50%;
   position: relative;
-  border: 2.78px solid white;
+
+  border: 12px solid transparent;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+    conic-gradient(
+        #efeff1 0deg,
+        #323744 90deg,
+        #b7b5bc 180deg,
+        #e0dfe3 270deg,
+        #393e4a 360deg
+      )
+      border-box;
+
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   overflow: hidden;
+}
+.wheel-inside {
+  width: 100%;
+  height: 100%;
+  border: 2px solid black;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
 }
 
 /* Radial gradient glow overlay */
@@ -108,7 +127,11 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
   border-radius: 50%;
   pointer-events: none;
   z-index: 50;
@@ -144,7 +167,7 @@
 .wheel-prompt-simple .segment-text {
   color: white;
   font-size: 11px;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-weight: 700;
   line-height: 13px;
   text-align: center;
@@ -168,35 +191,35 @@
 }
 
 .wheel-prompt-simple .segment-2 {
-  background: #C4B5E6;
+  background: #c4b5e6;
   transform: rotate(60deg);
   top: 0;
   left: 50%;
 }
 
 .wheel-prompt-simple .segment-3 {
-  background: #4DB59E;
+  background: #4db59e;
   transform: rotate(120deg);
   top: 0;
   left: 50%;
 }
 
 .wheel-prompt-simple .segment-4 {
-  background: #4DB59E;
+  background: #4db59e;
   transform: rotate(180deg);
   top: 50%;
   left: 50%;
 }
 
 .wheel-prompt-simple .segment-5 {
-  background: #2D8E78;
+  background: #2d8e78;
   transform: rotate(240deg);
   top: 50%;
   left: 0;
 }
 
 .wheel-prompt-simple .segment-6 {
-  background: #2D8E78;
+  background: #2d8e78;
   transform: rotate(300deg);
   top: 0;
   left: 0;
@@ -208,20 +231,30 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
-  background: white;
+  width: 160px;
+  height: 160px;
+  background: #59907d63;
   border-radius: 50%;
   display: flex;
+  padding: 16px;
   align-items: center;
   justify-content: center;
   z-index: 100;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
+.wheel-center-inside {
+  background: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
 
 .wheel-prompt-simple .wheel-logo {
-  width: 27px;
-  height: 47px;
+  width: 80px;
+  height: 80px;
 }
 
 /* 5. Spin Button */
@@ -229,19 +262,20 @@
   position: absolute;
   bottom: 100px;
   padding: 12px 50px;
-  background: linear-gradient(180deg, #FF7522 0%, #D94F00 100%);
+  background: linear-gradient(180deg, #ff7522 0%, #d94f00 100%);
   border-radius: 6px;
   border: none;
-  color: #F8F9FA;
+  color: #f8f9fa;
   font-size: 18px;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   text-transform: capitalize;
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 10;
   box-shadow: 0 4px 15px rgba(255, 117, 34, 0.4);
-  animation: fadeInUp 1s ease-out 0.5s both, buttonPulse 2s ease-in-out 1.5s infinite;
+  animation: fadeInUp 1s ease-out 0.5s both,
+    buttonPulse 2s ease-in-out 1.5s infinite;
 }
 
 .spin-btn:hover {
@@ -266,7 +300,8 @@
 }
 
 @keyframes buttonPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 4px 15px rgba(255, 117, 34, 0.4);
     transform: scale(1);
   }

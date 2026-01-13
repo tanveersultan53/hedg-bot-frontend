@@ -18,7 +18,7 @@ const SplashScreen = ({ onComplete }) => {
       <div className="ellipse ellipse-44"></div>
 
       <div className="logo-container">
-        <div className="spinner-ring"></div>
+        {/* <div className="spinner-ring"></div> */}
         <div className="logo-wrapper">
           <img
             src="/logo.svg"

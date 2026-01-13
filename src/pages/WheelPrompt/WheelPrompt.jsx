@@ -1,5 +1,5 @@
-import React from 'react';
-import './WheelPrompt.css';
+import React from "react";
+import "./WheelPrompt.css";
 
 const WheelPrompt = ({ onSpin }) => {
   return (
@@ -17,6 +17,7 @@ const WheelPrompt = ({ onSpin }) => {
           className="wheel-pointer-static"
         />
         <div className="wheel-static">
+          <div className="wheel-inside"></div>
           <div className="wheel-glow"></div>
           <div className="wheel-segment segment-1">
             <div className="segment-content">
@@ -55,7 +56,9 @@ const WheelPrompt = ({ onSpin }) => {
             </div>
           </div>
           <div className="wheel-center">
-            <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
+            <div className="wheel-center-inside">
+              <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
+            </div>
           </div>
         </div>
       </div>
