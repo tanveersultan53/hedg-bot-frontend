@@ -1,0 +1,288 @@
+/* Congratulations Modal - Overlay */
+.congratulations-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(12, 21, 31, 0.80);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.congratulations-modal {
+  width: 326px;
+  min-height: 402px;
+  background: #142333;
+  border-radius: 24px;
+  padding: 40px 30px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideUp 0.4s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Background ellipses for modal */
+.modal-ellipse-39 {
+  width: 193.92px;
+  height: 260.83px;
+  left: -42px;
+  top: 131px;
+  position: absolute;
+  background: rgba(60, 200, 200, 0.15);
+  box-shadow: 0 0 136px rgba(60, 200, 200, 0.3);
+  border-radius: 9999px;
+  filter: blur(68px);
+  animation: float1 8s ease-in-out infinite;
+}
+
+.modal-ellipse-42 {
+  width: 284.51px;
+  height: 196.19px;
+  right: -120px;
+  bottom: -50px;
+  position: absolute;
+  transform: rotate(-38deg);
+  opacity: 0.43;
+  background: #FF7522;
+  box-shadow: 0 0 196px rgba(255, 117, 34, 0.5);
+  border-radius: 9999px;
+  filter: blur(98px);
+  animation: float2 10s ease-in-out infinite;
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10px, -10px); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: rotate(-38deg) translate(0, 0); }
+  50% { transform: rotate(-38deg) translate(-10px, 10px); }
+}
+
+/* Logo */
+.modal-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  z-index: 10;
+  animation: logoScale 0.5s ease-out 0.2s both;
+}
+
+.modal-logo img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 15px rgba(255, 117, 34, 0.4));
+}
+
+@keyframes logoScale {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Title */
+.modal-title {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 26px;
+  background: linear-gradient(271deg, #D9D9D9 21.31%, #5DBEA8 46.89%, #FF7522 67.18%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 15px 0;
+  z-index: 10;
+  animation: fadeInDown 0.5s ease-out 0.3s both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reward text */
+.modal-reward {
+  color: #F8F9FA;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0 0 25px 0;
+  text-align: center;
+  z-index: 10;
+  animation: fadeIn 0.5s ease-out 0.4s both;
+}
+
+.reward-highlight {
+  color: #FF7522;
+  font-weight: 500;
+}
+
+.modal-reward-desc {
+  color: #B8BFC7;
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  line-height: 18px;
+  margin: 8px 0 0 0;
+  text-align: center;
+  z-index: 10;
+  opacity: 0.9;
+}
+
+/* Reward visual */
+.reward-visual {
+  width: 120px;
+  height: 120px;
+  margin: 15px 0 25px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: iconBounce 0.6s ease-out 0.5s both;
+}
+
+.reward-icon {
+  width: 100%;
+  height: auto;
+  max-width: 100px;
+  animation: iconSpin 1s ease-out 0.6s both;
+}
+
+@keyframes iconBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0) translateY(-20px);
+  }
+  60% {
+    transform: scale(1.1) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes iconSpin {
+  from {
+    transform: rotate(-180deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/* Terms */
+.modal-terms {
+  color: #F2F2F7;
+  font-size: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  text-decoration: underline;
+  line-height: 12px;
+  margin: 0;
+  cursor: pointer;
+  z-index: 10;
+  animation: fadeIn 0.5s ease-out 0.7s both;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.modal-terms:hover {
+  opacity: 1;
+}
+
+/* Claim button */
+.claim-button {
+  padding: 10px 30px;
+  background: linear-gradient(180deg, #FF7522 0%, #D94F00 100%);
+  border-radius: 6px;
+  border: none;
+  color: #F8F9FA;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  text-transform: capitalize;
+  line-height: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(255, 117, 34, 0.4);
+  animation: buttonSlideUp 0.5s ease-out 0.8s both;
+  margin-bottom: 20px;
+}
+
+@keyframes buttonSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.claim-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 117, 34, 0.6);
+}
+
+.claim-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(255, 117, 34, 0.4);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .congratulations-modal {
+    width: 90%;
+    max-width: 326px;
+    padding: 35px 25px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+  }
+}
