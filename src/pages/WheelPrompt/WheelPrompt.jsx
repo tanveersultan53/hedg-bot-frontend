@@ -10,13 +10,17 @@ const WheelPrompt = ({ onSpin }) => {
       <div className="ellipse-orange-top"></div>
 
       {/* Spinning Wheel */}
+      <h1 className="page-title">You’re In</h1>
+      <p className="page-subtitle">Spin the wheel to unlock your HEDG reward</p>
       <div className="wheel-container">
         <img
           src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
           alt="Pointer"
           className="wheel-pointer-static"
         />
-        <div className="wheel-static">
+        <img src="/assets/ring.png" alt="ring" className="ring" />
+        <img src="/assets/spiner.png" alt="spinner" className="spiner" />
+        {/* <div className="wheel-static">
           <div className="wheel-inside"></div>
           <div className="wheel-glow"></div>
           <div className="wheel-segment segment-1">
@@ -60,7 +64,7 @@ const WheelPrompt = ({ onSpin }) => {
               <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Spin Button */}

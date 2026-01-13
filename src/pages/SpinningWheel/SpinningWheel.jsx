@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import './SpinningWheel.css';
-import CongratulationsModal from './CongratulationsModal';
+import React, { useState, useEffect } from "react";
+import "./SpinningWheel.css";
+import CongratulationsModal from "./CongratulationsModal";
 
 const SpinningWheel = ({ onSpinComplete, reward }) => {
   const [spinning, setSpinning] = useState(false);
@@ -16,7 +16,7 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
     const baseSpins = 5; // Number of full rotations
     const segmentDegrees = 60; // 6 segments = 360/6
     const randomOffset = Math.random() * segmentDegrees;
-    const finalRotation = (baseSpins * 360) + randomOffset;
+    const finalRotation = baseSpins * 360 + randomOffset + 10;
 
     setTimeout(() => {
       setRotation(finalRotation);
@@ -47,9 +47,9 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
       <div className="ellipse ellipse-42"></div>
       <div className="ellipse ellipse-44"></div>
 
-      <div className="spin-header">
-        <h2 className="spin-text">Spinning...</h2>
-      </div>
+      {/* Spinning Wheel */}
+      <h1 className="page-title">Hurrah !</h1>
+      <p className="page-subtitle">Spining...</p>
 
       <div className="wheel-wrapper">
         <img
@@ -58,13 +58,15 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
           className="wheel-pointer"
         />
         <div
-          className={`wheel-main ${spinning ? 'spinning' : 'stopped'}`}
+          className={`wheel-main ${spinning ? "spinning" : "stopped"}`}
           style={{ transform: `rotate(${rotation}deg)` }}
         >
           {/* Radial gradient glow overlay */}
           <div className="wheel-glow"></div>
+          <img src="/assets/ring.png" alt="ring" className="ring" />
+          <img src="/assets/spiner.png" alt="spinner" className="spiner" />
 
-          <div className="wheel-segment segment-1">
+          {/* <div className="wheel-segment segment-1">
             <div className="segment-content">
               <div className="segment-icon">🔓</div>
               <span className="segment-text">Upgraded Access</span>
@@ -101,12 +103,8 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
             </div>
           </div>
           <div className="wheel-center">
-            <img
-              src="/logo.svg"
-              alt="HEDG"
-              className="wheel-logo"
-            />
-          </div>
+            <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
+          </div> */}
         </div>
       </div>
 
@@ -116,10 +114,7 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
 
       {/* Congratulations Modal */}
       {showModal && (
-        <CongratulationsModal
-          reward={reward}
-          onClaim={handleClaimReward}
-        />
+        <CongratulationsModal reward={reward} onClaim={handleClaimReward} />
       )}
     </div>
   );

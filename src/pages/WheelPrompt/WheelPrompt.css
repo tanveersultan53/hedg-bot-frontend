@@ -64,6 +64,7 @@
   height: 340px;
   z-index: 10;
   animation: fadeInScale 1s ease-out;
+  margin-bottom: 40px;
 }
 
 @keyframes fadeInScale {
@@ -83,10 +84,22 @@
   top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 22px;
+  width: 28px;
   height: auto;
   z-index: 200;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+.ring {
+  width: inherit;
+  height: inherit;
+  z-index: 1;
+  position: relative;
+}
+.spiner {
+  width: inherit;
+  height: inherit;
+  position: absolute;
+  right: 0;
 }
 
 /* Wheel */
@@ -259,8 +272,8 @@
 
 /* 5. Spin Button */
 .spin-btn {
-  position: absolute;
-  bottom: 100px;
+  /* position: absolute; */
+  /* bottom: 100px; */
   padding: 12px 50px;
   background: linear-gradient(180deg, #ff7522 0%, #d94f00 100%);
   border-radius: 6px;

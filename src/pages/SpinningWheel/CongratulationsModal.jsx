@@ -9,10 +9,10 @@ const CongratulationsModal = ({ reward, onClaim }) => {
         <div className="modal-ellipse modal-ellipse-39"></div>
         <div className="modal-ellipse modal-ellipse-42"></div>
 
-        {/* Logo */}
+        {/* Logo
         <div className="modal-logo">
           <img src="/logo.svg" alt="HEDG" />
-        </div>
+        </div> */}
 
         {/* Congratulations text */}
         <h2 className="modal-title">Congratulations!</h2>
