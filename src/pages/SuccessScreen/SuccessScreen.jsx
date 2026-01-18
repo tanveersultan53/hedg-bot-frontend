@@ -52,15 +52,22 @@ const SuccessScreen = ({ redirectUrl, autoRedirectSeconds = 3 }) => {
           Our VIP representative will contact you shortly to guide you further.
         </p>
 
+        {/* Countdown */}
+        {countdown > 0 && (
+          <p className="redirect-countdown">
+            Redirecting in {countdown} second{countdown !== 1 ? 's' : ''}...
+          </p>
+        )}
+
         {/* Launch button */}
         <button className="launch-button" onClick={handleManualRedirect}>
           Launch Platform
         </button>
 
         {/* Continue link */}
-        <a href="#" className="continue-link">
+        <button className="continue-link" onClick={handleManualRedirect}>
           Continue exploring
-        </a>
+        </button>
       </div>
     </div>
   );
