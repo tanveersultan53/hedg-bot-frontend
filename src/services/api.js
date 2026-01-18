@@ -10,37 +10,16 @@ const api = axios.create({
 });
 
 export const onboardingAPI = {
-  // Start onboarding
-  startOnboarding: (telegramData) => {
-    return api.post('/start/', telegramData);
+  // SIMPLIFIED API - Just 2 endpoints!
+
+  // Check if user exists
+  checkUser: (telegramId) => {
+    return api.post('/check-user', { telegram_id: telegramId });
   },
 
-  // Spin wheel
-  spinWheel: (sessionToken) => {
-    return api.post('/spin/', { session_token: sessionToken });
-  },
-
-  // Submit registration form
-  submitForm: (formData) => {
-    return api.post('/submit/', formData);
-  },
-
-  // Update session status
-  updateStatus: (sessionToken, status) => {
-    return api.post('/update-status/', {
-      session_token: sessionToken,
-      status: status,
-    });
-  },
-
-  // Get session status
-  getSessionStatus: (sessionToken) => {
-    return api.get(`/session/${sessionToken}/`);
-  },
-
-  // Auto login
-  autoLogin: (telegramId) => {
-    return api.post('/auto-login/', { telegram_id: telegramId });
+  // Complete signup with all data
+  signup: (userData) => {
+    return api.post('/signup', userData);
   },
 };
 

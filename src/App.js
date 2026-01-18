@@ -11,33 +11,38 @@ import SuccessScreen from './pages/SuccessScreen';
 import { onboardingAPI } from './services/api';
 
 function App() {
+  console.log('🎬 App component loaded');
+
   const [currentFrame, setCurrentFrame] = useState('splash'); // splash, wheelPrompt, spinning, rewardForm, success
-  const [sessionToken, setSessionToken] = useState(null);
   const [reward, setReward] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [telegramUserData, setTelegramUserData] = useState(null);
 
   useEffect(() => {
+    console.log('🎯 App mounted - Initializing Telegram WebApp...');
+
     // Initialize Telegram WebApp
     WebApp.ready();
     WebApp.expand();
 
-    // Get session token from URL or start onboarding
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionFromUrl = urlParams.get('session');
+    console.log('✅ WebApp.ready() and WebApp.expand() called');
+    console.log('🌐 Current URL:', window.location.href);
 
-    if (sessionFromUrl) {
-      setSessionToken(sessionFromUrl);
-      setCurrentFrame('wheelPrompt');
-    } else {
-      initializeOnboarding();
-    }
+    // SIMPLIFIED: Just initialize onboarding (check user)
+    initializeOnboarding();
   }, []);
 
   const initializeOnboarding = async () => {
     try {
+      console.log('🚀 Initializing onboarding...');
+      console.log('📱 Telegram WebApp Object:', WebApp);
+      console.log('📊 WebApp.initDataUnsafe:', WebApp.initDataUnsafe);
+
       const telegramUser = WebApp.initDataUnsafe?.user;
+
+      console.log('👤 Telegram User Data:', telegramUser);
 
       if (!telegramUser) {
         // Fallback for testing outside Telegram - DEMO MODE
@@ -48,108 +53,129 @@ function App() {
         return;
       }
 
-      const response = await onboardingAPI.startOnboarding({
+      console.log('✅ Telegram user found!');
+      console.log('   ID:', telegramUser.id);
+      console.log('   Username:', telegramUser.username);
+      console.log('   First Name:', telegramUser.first_name);
+      console.log('   Last Name:', telegramUser.last_name);
+
+      // Store Telegram user data in state
+      setTelegramUserData({
         telegram_id: telegramUser.id,
         telegram_username: telegramUser.username,
         first_name: telegramUser.first_name,
         last_name: telegramUser.last_name,
+        language_code: telegramUser.language_code,
+        photo_url: telegramUser.photo_url,
       });
 
-      if (response.data.status === 'returning_user') {
+      // SIMPLIFIED: Just check if user exists
+      console.log('📤 Checking if user exists...');
+      const response = await onboardingAPI.checkUser(telegramUser.id);
+
+      console.log('📥 API Response:', response.data);
+
+      if (response.data.status === 'existing_user') {
         // Redirect returning user immediately
+        console.log('🔄 Existing user - redirecting...');
         window.location.href = response.data.redirect_url;
       } else {
-        // New user - start onboarding
-        setSessionToken(response.data.session.session_token);
+        // New user - start onboarding (show splash screen)
+        console.log('🆕 New user - starting onboarding');
         // Splash screen will auto-advance
       }
     } catch (err) {
-      console.error('Error initializing onboarding:', err);
+      console.error('❌ Error initializing onboarding:', err);
+      console.error('   Error message:', err.message);
+      console.error('   Error response:', err.response?.data);
       console.log('⚠️ API Error - Continuing in demo mode');
       // Continue to splash screen anyway for demo purposes
     }
   };
 
   const handleSplashComplete = async () => {
-    try {
-      if (sessionToken) {
-        await onboardingAPI.updateStatus(sessionToken, 'splash_shown');
-      }
-    } catch (err) {
-      console.log('API error, continuing in demo mode');
-    }
+    console.log('✅ Splash complete - moving to wheel prompt');
     setCurrentFrame('wheelPrompt');
   };
 
   const handleSpin = async () => {
+    console.log('🎡 Spinning wheel...');
     setCurrentFrame('spinning');
 
-    try {
-      if (sessionToken) {
-        await onboardingAPI.updateStatus(sessionToken, 'spinning');
-        // Call spin API
-        const response = await onboardingAPI.spinWheel(sessionToken);
-        setReward(response.data.reward);
-      } else {
-        // Demo mode - use mock reward
-        console.log('Demo mode: Using mock reward data');
-        const mockRewards = [
-          { name: 'Risk-free credit', description: '100 units' },
-          { name: 'VIP onboarding', description: 'Premium access' },
-          { name: 'fee discounts', description: '50% off trading fees' },
-          { name: 'welcome bonus', description: '$50 bonus' },
-        ];
-        const randomReward = mockRewards[Math.floor(Math.random() * mockRewards.length)];
-        setReward(randomReward);
-      }
-    } catch (err) {
-      console.error('Error spinning wheel:', err);
-      // Fallback to mock data even on error
-      setReward({ name: 'Risk-free credit', description: '100 units' });
-    }
+    // SIMPLIFIED: Spin is done in frontend, just pick random reward
+    const mockRewards = [
+      { name: 'Risk-free credit', description: '100 units' },
+      { name: 'VIP onboarding', description: 'Premium access' },
+      { name: 'fee discounts', description: '50% off trading fees' },
+      { name: 'welcome bonus', description: '$50 bonus' },
+    ];
+    const randomReward = mockRewards[Math.floor(Math.random() * mockRewards.length)];
+    console.log('🎁 Reward selected:', randomReward);
+    setReward(randomReward);
   };
 
   const handleSpinComplete = async () => {
-    try {
-      if (sessionToken) {
-        await onboardingAPI.updateStatus(sessionToken, 'reward_shown');
-      }
-    } catch (err) {
-      console.log('API error, continuing in demo mode');
-    }
+    console.log('✅ Spin complete - moving to form');
     setCurrentFrame('rewardForm');
   };
 
   const handleFormSubmit = async (formData) => {
+    console.log('📝 Form submission started...');
+    console.log('   Form data:', formData);
+    console.log('   Telegram user data:', telegramUserData);
+    console.log('   Reward:', reward);
     setLoading(true);
     setError(null);
 
+    // SIMPLIFIED: Combine ALL data for one signup call
+    const completeData = {
+      ...formData,
+      ...(telegramUserData || {}), // Telegram data
+      reward: reward, // Include reward
+    };
+
+    console.log('📦 Complete signup data:', completeData);
+
     try {
-      if (sessionToken) {
-        const response = await onboardingAPI.submitForm({
-          session_token: sessionToken,
-          ...formData,
-        });
+      if (telegramUserData) {
+        // Call simplified signup endpoint
+        console.log('📤 Calling signup API...');
+        const response = await onboardingAPI.signup(completeData);
+
+        console.log('📥 Signup response:', response.data);
+        console.log('🔗 Redirect URL:', response.data.redirect_url);
         setRedirectUrl(response.data.redirect_url);
       } else {
         // Demo mode - use mock redirect URL
-        console.log('Demo mode: Form submitted', formData);
-        // Simulate API delay
+        console.log('🎮 Demo mode: Signup with complete data:', completeData);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        setRedirectUrl('https://hedg.com/platform');
+        const mockUrl = 'https://hedg.com/platform';
+        console.log('🔗 Mock redirect URL:', mockUrl);
+        setRedirectUrl(mockUrl);
       }
+
+      console.log('✅ Moving to success screen');
       setCurrentFrame('success');
     } catch (err) {
-      console.error('Error submitting form:', err);
-      // Fallback to mock redirect even on error
-      setRedirectUrl('https://hedg.com/platform');
-      setCurrentFrame('success');
+      console.error('❌ Error during signup:', err);
+      console.error('   Error message:', err.message);
+      console.error('   Error response:', err.response?.data);
+
+      // Set error message to display to user
+      const errorMessage = err.response?.data?.message ||
+                          err.response?.data?.error ||
+                          'Unable to complete signup. Please try again.';
+      setError(errorMessage);
+
+      // Stay on the form page - do NOT navigate to success screen
+      console.log('⚠️ Staying on form due to signup error');
     } finally {
       setLoading(false);
     }
   };
 
   const renderFrame = () => {
+    console.log('🖼️ Rendering frame:', currentFrame);
     switch (currentFrame) {
       case 'splash':
         return <SplashScreen onComplete={handleSplashComplete} />;
@@ -161,7 +187,7 @@ function App() {
         return <SpinningWheel onSpinComplete={handleSpinComplete} reward={reward} />;
 
       case 'rewardForm':
-        return <RewardForm reward={reward} onSubmit={handleFormSubmit} loading={loading} />;
+        return <RewardForm reward={reward} onSubmit={handleFormSubmit} loading={loading} error={error} />;
 
       case 'success':
         return <SuccessScreen redirectUrl={redirectUrl} autoRedirectSeconds={3} />;

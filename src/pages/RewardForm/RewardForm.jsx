@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import './RewardForm.css';
 
-const RewardForm = ({ reward, onSubmit, loading }) => {
+const RewardForm = ({ reward, onSubmit, loading, error }) => {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -13,6 +13,27 @@ const RewardForm = ({ reward, onSubmit, loading }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [detectedCountry, setDetectedCountry] = useState('us');
+
+  // Auto-detect user's country on component mount
+  useEffect(() => {
+    const detectCountry = async () => {
+      try {
+        // Using ipapi.co for geolocation (free tier available)
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        if (data.country_code) {
+          setDetectedCountry(data.country_code.toLowerCase());
+        }
+      } catch (error) {
+        console.log('Could not detect country, using default (US)');
+        // Fallback to US if detection fails
+        setDetectedCountry('us');
+      }
+    };
+
+    detectCountry();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -101,7 +122,7 @@ const RewardForm = ({ reward, onSubmit, loading }) => {
           <div className="form-group">
             <label htmlFor="phone">Phone Number</label>
             <PhoneInput
-              country={'us'}
+              country={detectedCountry}
               value={formData.country_code + formData.phone_number}
               onChange={handlePhoneChange}
               inputClass={errors.phone_number ? 'error' : ''}
@@ -109,6 +130,8 @@ const RewardForm = ({ reward, onSubmit, loading }) => {
               buttonClass="phone-dropdown"
               enableSearch={true}
               searchPlaceholder="Search country..."
+              autoFormat={true}
+              preferredCountries={['us', 'gb', 'ca', 'au']}
             />
             {errors.phone_number && (
               <span className="error-message">{errors.phone_number}</span>
@@ -130,6 +153,12 @@ const RewardForm = ({ reward, onSubmit, loading }) => {
               <span className="error-message">{errors.email}</span>
             )}
           </div>
+
+          {error && (
+            <div className="api-error-message">
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"
