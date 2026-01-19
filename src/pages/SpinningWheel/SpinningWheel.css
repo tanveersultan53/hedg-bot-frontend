@@ -116,8 +116,10 @@
 
 .wheel-wrapper {
   position: relative;
-  width: 340px;
-  height: 340px;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   z-index: 10;
   animation: fadeInScale 1s ease-out;
   margin-bottom: 40px;
@@ -342,5 +344,56 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .spinning-wheel-container {
+    padding: 30px 15px;
+  }
+
+  .wheel-wrapper {
+    max-width: 280px;
+    margin-bottom: 30px;
+  }
+
+  .spin-text {
+    font-size: 26px;
+  }
+
+  .wait-text {
+    font-size: 16px;
+  }
+
+  .wheel-center {
+    width: 120px;
+    height: 120px;
+  }
+
+  .wheel-logo {
+    width: 50px;
+    height: auto;
+  }
+
+  .spinning-wheel-container .wheel-glow {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .wheel-wrapper {
+    max-width: 250px;
+  }
+
+  .spin-text {
+    font-size: 24px;
+  }
+
+  .wheel-center {
+    width: 100px;
+    height: 100px;
   }
 }

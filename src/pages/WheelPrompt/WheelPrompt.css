@@ -60,8 +60,10 @@
 /* Wheel Container */
 .wheel-container {
   position: relative;
-  width: 340px;
-  height: 340px;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   z-index: 10;
   animation: fadeInScale 1s ease-out;
   margin-bottom: 40px;
@@ -326,6 +328,15 @@
 
 /* Mobile responsiveness */
 @media (max-width: 480px) {
+  .wheel-prompt-simple {
+    padding: 20px 15px;
+  }
+
+  .wheel-container {
+    max-width: 280px;
+    margin-bottom: 30px;
+  }
+
   .hedg-logo-container {
     width: 100px;
     height: 43px;
@@ -336,8 +347,29 @@
   }
 
   .spin-btn {
-    bottom: 60px;
     padding: 10px 40px;
     font-size: 16px;
+  }
+
+  .wheel-prompt-simple .wheel-center {
+    width: 120px;
+    height: 120px;
+  }
+
+  .wheel-prompt-simple .wheel-logo {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .wheel-container {
+    max-width: 250px;
+  }
+
+  .spin-btn {
+    padding: 10px 30px;
+    font-size: 15px;
   }
 }

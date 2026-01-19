@@ -13,7 +13,7 @@ import { onboardingAPI } from './services/api';
 function App() {
   console.log('🎬 App component loaded');
 
-  const [currentFrame, setCurrentFrame] = useState('splash'); // splash, wheelPrompt, spinning, rewardForm, success
+  const [currentFrame, setCurrentFrame] = useState('loading'); // loading, splash, wheelPrompt, spinning, rewardForm, success
   const [reward, setReward] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,8 @@ function App() {
         console.log('🎮 Demo Mode: Running without Telegram');
         console.log('📝 No API calls will be made');
         console.log('✅ Full flow will work with mock data');
-        // Stay on splash screen - it will auto-advance
+        // Show splash screen for demo mode
+        setCurrentFrame('splash');
         return;
       }
 
@@ -76,20 +77,30 @@ function App() {
       console.log('📥 API Response:', response.data);
 
       if (response.data.status === 'existing_user') {
-        // Redirect returning user immediately
-        console.log('🔄 Existing user - redirecting...');
+        // Redirect returning user immediately WITHOUT showing any UI
+        console.log('🔄 Existing user detected - redirecting to platform...');
+        console.log('🔗 Redirect URL:', response.data.redirect_url);
+        // Keep loading screen while redirecting
         window.location.href = response.data.redirect_url;
       } else {
         // New user - start onboarding (show splash screen)
-        console.log('🆕 New user - starting onboarding');
-        // Splash screen will auto-advance
+        console.log('🆕 New user detected - starting onboarding flow');
+        setCurrentFrame('splash');
       }
     } catch (err) {
       console.error('❌ Error initializing onboarding:', err);
       console.error('   Error message:', err.message);
       console.error('   Error response:', err.response?.data);
-      console.log('⚠️ API Error - Continuing in demo mode');
-      // Continue to splash screen anyway for demo purposes
+
+      // If there's an API error, show error to user instead of continuing
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('Unable to connect to server. Please try again.');
+      }
+
+      console.log('⚠️ API Error - Showing splash screen for retry');
+      setCurrentFrame('splash');
     }
   };
 
@@ -177,6 +188,29 @@ function App() {
   const renderFrame = () => {
     console.log('🖼️ Rendering frame:', currentFrame);
     switch (currentFrame) {
+      case 'loading':
+        return (
+          <div className="loading-screen" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            backgroundColor: '#000',
+            color: '#fff'
+          }}>
+            <div className="spinner" style={{
+              border: '4px solid rgba(255, 255, 255, 0.1)',
+              borderTop: '4px solid #fff',
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            <p style={{ marginTop: '20px', fontSize: '16px' }}>Loading...</p>
+          </div>
+        );
+
       case 'splash':
         return <SplashScreen onComplete={handleSplashComplete} />;
 
