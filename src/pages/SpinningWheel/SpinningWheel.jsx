@@ -11,12 +11,10 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
     // Start spinning
     setSpinning(true);
 
-    // Calculate final rotation based on reward
-    // Full spins + specific segment
-    const baseSpins = 5; // Number of full rotations
-    const segmentDegrees = 60; // 6 segments = 360/6
-    const randomOffset = Math.random() * segmentDegrees;
-    const finalRotation = baseSpins * 360 + randomOffset + 10;
+    // Calculate final rotation with random stopping position
+    const baseSpins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations for variety
+    const randomStopPosition = Math.random() * 360; // Random position 0-360 degrees
+    const finalRotation = baseSpins * 360 + randomStopPosition;
 
     setTimeout(() => {
       setRotation(finalRotation);
@@ -57,14 +55,16 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
           alt="Pointer"
           className="wheel-pointer"
         />
-        <div
-          className={`wheel-main ${spinning ? "spinning" : "stopped"}`}
-          style={{ transform: `rotate(${rotation}deg)` }}
-        >
+        <div className="wheel-main">
           {/* Radial gradient glow overlay */}
           <div className="wheel-glow"></div>
           <img src="/assets/ring.png" alt="ring" className="ring" />
-          <img src="/assets/spiner.png" alt="spinner" className="spiner" />
+          <img
+            src="/assets/spiner.png"
+            alt="spinner"
+            className={`spiner ${spinning ? "spinning" : "stopped"}`}
+            style={{ transform: `rotate(${rotation}deg)` }}
+          />
 
           {/* <div className="wheel-segment segment-1">
             <div className="segment-content">

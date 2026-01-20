@@ -5,7 +5,8 @@ import './RewardForm.css';
 
 const RewardForm = ({ reward, onSubmit, loading, error }) => {
   const [formData, setFormData] = useState({
-    full_name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone_number: '',
     country: '',
@@ -62,8 +63,12 @@ const RewardForm = ({ reward, onSubmit, loading, error }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = 'Full name is required';
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First name is required';
+    }
+
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last name is required';
     }
 
     if (!formData.email.trim()) {
@@ -104,18 +109,34 @@ const RewardForm = ({ reward, onSubmit, loading, error }) => {
       <div className="form-container">
         <form onSubmit={handleSubmit} className="reward-form">
           <div className="form-group">
-            <label htmlFor="full_name">Full name</label>
+            <label htmlFor="first_name">First name</label>
             <input
               type="text"
-              id="full_name"
-              name="full_name"
-              value={formData.full_name}
+              id="first_name"
+              name="first_name"
+              value={formData.first_name}
               onChange={handleChange}
-              placeholder="Full name"
-              className={errors.full_name ? 'error' : ''}
+              placeholder="First name"
+              className={errors.first_name ? 'error' : ''}
             />
-            {errors.full_name && (
-              <span className="error-message">{errors.full_name}</span>
+            {errors.first_name && (
+              <span className="error-message">{errors.first_name}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="last_name">Last name</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+              placeholder="Last name"
+              className={errors.last_name ? 'error' : ''}
+            />
+            {errors.last_name && (
+              <span className="error-message">{errors.last_name}</span>
             )}
           </div>
 

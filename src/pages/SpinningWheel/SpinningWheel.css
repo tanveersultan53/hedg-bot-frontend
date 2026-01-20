@@ -147,6 +147,11 @@
   height: inherit;
   position: absolute;
   right: 0;
+  transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.spiner.spinning {
+  animation: glow 1s ease-in-out infinite;
 }
 
 @keyframes pointerBounce {
@@ -166,7 +171,6 @@
   position: relative;
   border: 2.78px solid white;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
   overflow: hidden;
 }
 
