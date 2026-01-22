@@ -76,6 +76,34 @@ const authService = {
   },
 
   /**
+   * Telegram-based auto-login using telegram_id
+   * @param {number} telegramId - Telegram user ID
+   * @returns {Promise} - Response with access token and user data
+   */
+  telegramAutologin: async (telegramId) => {
+    try {
+      const response = await authAPI.post('/telegram-autologin', {
+        telegram_id: telegramId,
+      });
+
+      // Store access token if provided
+      if (response.data.access_token) {
+        localStorage.setItem('access_token', response.data.access_token);
+      }
+
+      // Store user data
+      if (response.data.user) {
+        localStorage.setItem('customer', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error('Telegram autologin error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  /**
    * Logout - Clear local storage and cookies
    */
   logout: () => {

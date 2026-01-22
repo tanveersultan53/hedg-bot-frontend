@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
 import './App.css';
 
@@ -7,7 +7,6 @@ import WheelPrompt from './pages/WheelPrompt';
 import SpinningWheel from './pages/SpinningWheel';
 import RewardForm from './pages/RewardForm';
 import SuccessScreen from './pages/SuccessScreen';
-import LoginPage from './pages/LoginPage';
 
 import { onboardingAPI } from './services/api';
 import authService from './services/authService';
@@ -15,18 +14,29 @@ import authService from './services/authService';
 function App() {
   console.log('🎬 App component loaded');
 
-  const [currentFrame, setCurrentFrame] = useState('loading'); // loading, login, splash, wheelPrompt, spinning, rewardForm, success
+  const [currentFrame, setCurrentFrame] = useState('loading'); // loading, splash, wheelPrompt, spinning, rewardForm, success
   const [reward, setReward] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [telegramUserData, setTelegramUserData] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [customer, setCustomer] = useState(null);
 
-  const initializeOnboarding = useCallback(async () => {
+  useEffect(() => {
+    console.log('🎯 App mounted - Initializing Telegram WebApp...');
+
+    // Initialize Telegram WebApp
+    WebApp.ready();
+    WebApp.expand();
+
+    console.log('✅ WebApp.ready() and WebApp.expand() called');
+    console.log('🌐 Current URL:', window.location.href);
+
+    // SIMPLIFIED: Just initialize onboarding directly (Telegram data IS the authentication)
+    initializeOnboarding();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const initializeOnboarding = async () => {
     try {
       console.log('🚀 Initializing onboarding...');
       console.log('📱 Telegram WebApp Object:', WebApp);
@@ -62,17 +72,28 @@ function App() {
         photo_url: telegramUser.photo_url,
       });
 
-      // SIMPLIFIED: Just check if user exists
+      // SIMPLIFIED: Just check if user exists (backend auto-authenticates based on telegram_id)
       console.log('📤 Checking if user exists...');
       const response = await onboardingAPI.checkUser(telegramUser.id);
 
       console.log('📥 API Response:', response.data);
 
       if (response.data.status === 'existing_user') {
-        // Redirect returning user immediately WITHOUT showing any UI
-        console.log('🔄 Existing user detected - redirecting to platform...');
+        // Existing user - establish session with Web Trader
+        console.log('🔄 Existing user detected - establishing session...');
+
+        try {
+          // Call telegram-autologin to get fresh session and cookies
+          console.log('🔐 Calling telegram-autologin for session...');
+          await authService.telegramAutologin(telegramUser.id);
+          console.log('✅ Session established successfully');
+        } catch (autologinErr) {
+          console.warn('⚠️ Telegram autologin failed, continuing with redirect:', autologinErr);
+          // Continue even if autologin fails - check-user already returned valid data
+        }
+
+        // Redirect to platform
         console.log('🔗 Redirect URL:', response.data.redirect_url);
-        // Keep loading screen while redirecting
         window.location.href = response.data.redirect_url;
       } else {
         // New user - start onboarding (show splash screen)
@@ -94,54 +115,6 @@ function App() {
       console.log('⚠️ API Error - Showing splash screen for retry');
       setCurrentFrame('splash');
     }
-  }, []);
-
-  const checkAuthentication = useCallback(async () => {
-    console.log('🔐 Checking authentication status...');
-
-    try {
-      // Try to get existing customer or autologin
-      const authenticated = await authService.checkAuthStatus();
-
-      if (authenticated) {
-        console.log('✅ User is authenticated');
-        const customerData = authService.getCustomer();
-        setCustomer(customerData);
-        setIsAuthenticated(true);
-
-        // Proceed with onboarding
-        initializeOnboarding();
-      } else {
-        console.log('❌ User is not authenticated - showing login');
-        setCurrentFrame('login');
-      }
-    } catch (err) {
-      console.error('❌ Error checking authentication:', err);
-      setCurrentFrame('login');
-    }
-  }, [initializeOnboarding]);
-
-  useEffect(() => {
-    console.log('🎯 App mounted - Initializing Telegram WebApp...');
-
-    // Initialize Telegram WebApp
-    WebApp.ready();
-    WebApp.expand();
-
-    console.log('✅ WebApp.ready() and WebApp.expand() called');
-    console.log('🌐 Current URL:', window.location.href);
-
-    // Check authentication status first
-    checkAuthentication();
-  }, [checkAuthentication]);
-
-  const handleLoginSuccess = async (response) => {
-    console.log('✅ Login successful:', response);
-    setCustomer(response.customer);
-    setIsAuthenticated(true);
-
-    // Proceed with onboarding after login
-    initializeOnboarding();
   };
 
   const handleSplashComplete = async () => {
@@ -244,9 +217,6 @@ function App() {
             <p style={{ marginTop: '20px', fontSize: '16px' }}>Loading...</p>
           </div>
         );
-
-      case 'login':
-        return <LoginPage onLoginSuccess={handleLoginSuccess} />;
 
       case 'splash':
         return <SplashScreen onComplete={handleSplashComplete} />;
