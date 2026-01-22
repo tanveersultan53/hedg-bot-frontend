@@ -159,12 +159,11 @@ function App() {
     setError(null);
 
     // SIMPLIFIED: Combine ALL data for one signup call
+    // Backend will auto-create full_name from first_name + last_name
     const completeData = {
       ...formData,
       ...(telegramUserData || {}), // Telegram data
       reward: reward, // Include reward
-      // Create full_name from first_name and last_name (required by backend)
-      full_name: `${formData.first_name || ''} ${formData.last_name || ''}`.trim(),
     };
 
     console.log('📦 Complete signup data:', completeData);
