@@ -3,7 +3,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import './RewardForm.css';
 
-const RewardForm = ({ reward, onSubmit, loading, error }) => {
+const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -15,6 +15,18 @@ const RewardForm = ({ reward, onSubmit, loading, error }) => {
 
   const [errors, setErrors] = useState({});
   const [detectedCountry, setDetectedCountry] = useState('us');
+
+  // Auto-populate first_name and last_name from Telegram if available
+  useEffect(() => {
+    if (telegramUserData) {
+      console.log('📝 Auto-populating form with Telegram data:', telegramUserData);
+      setFormData(prev => ({
+        ...prev,
+        first_name: telegramUserData.first_name || '',
+        last_name: telegramUserData.last_name || '',
+      }));
+    }
+  }, [telegramUserData]);
 
   // Auto-detect user's country on component mount
   useEffect(() => {

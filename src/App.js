@@ -7,18 +7,22 @@ import WheelPrompt from './pages/WheelPrompt';
 import SpinningWheel from './pages/SpinningWheel';
 import RewardForm from './pages/RewardForm';
 import SuccessScreen from './pages/SuccessScreen';
+import LoginPage from './pages/LoginPage';
 
 import { onboardingAPI } from './services/api';
+import authService from './services/authService';
 
 function App() {
   console.log('🎬 App component loaded');
 
-  const [currentFrame, setCurrentFrame] = useState('loading'); // loading, splash, wheelPrompt, spinning, rewardForm, success
+  const [currentFrame, setCurrentFrame] = useState('loading'); // loading, login, splash, wheelPrompt, spinning, rewardForm, success
   const [reward, setReward] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [telegramUserData, setTelegramUserData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
     console.log('🎯 App mounted - Initializing Telegram WebApp...');
@@ -30,9 +34,34 @@ function App() {
     console.log('✅ WebApp.ready() and WebApp.expand() called');
     console.log('🌐 Current URL:', window.location.href);
 
-    // SIMPLIFIED: Just initialize onboarding (check user)
-    initializeOnboarding();
+    // Check authentication status first
+    checkAuthentication();
   }, []);
+
+  const checkAuthentication = async () => {
+    console.log('🔐 Checking authentication status...');
+
+    try {
+      // Try to get existing customer or autologin
+      const authenticated = await authService.checkAuthStatus();
+
+      if (authenticated) {
+        console.log('✅ User is authenticated');
+        const customerData = authService.getCustomer();
+        setCustomer(customerData);
+        setIsAuthenticated(true);
+
+        // Proceed with onboarding
+        initializeOnboarding();
+      } else {
+        console.log('❌ User is not authenticated - showing login');
+        setCurrentFrame('login');
+      }
+    } catch (err) {
+      console.error('❌ Error checking authentication:', err);
+      setCurrentFrame('login');
+    }
+  };
 
   const initializeOnboarding = async () => {
     try {
@@ -104,6 +133,15 @@ function App() {
     }
   };
 
+  const handleLoginSuccess = async (response) => {
+    console.log('✅ Login successful:', response);
+    setCustomer(response.customer);
+    setIsAuthenticated(true);
+
+    // Proceed with onboarding after login
+    initializeOnboarding();
+  };
+
   const handleSplashComplete = async () => {
     console.log('✅ Splash complete - moving to wheel prompt');
     setCurrentFrame('wheelPrompt');
@@ -113,16 +151,10 @@ function App() {
     console.log('🎡 Spinning wheel...');
     setCurrentFrame('spinning');
 
-    // SIMPLIFIED: Spin is done in frontend, just pick random reward
-    const mockRewards = [
-      { name: 'Risk-free credit', description: '100 units' },
-      { name: 'VIP onboarding', description: 'Premium access' },
-      { name: 'fee discounts', description: '50% off trading fees' },
-      { name: 'welcome bonus', description: '$50 bonus' },
-    ];
-    const randomReward = mockRewards[Math.floor(Math.random() * mockRewards.length)];
-    console.log('🎁 Reward selected:', randomReward);
-    setReward(randomReward);
+    // Always set reward to "Welcome Bonus" since spinner always stops there
+    const welcomeReward = { name: 'Welcome Bonus', description: '$50 bonus' };
+    console.log('🎁 Reward selected:', welcomeReward);
+    setReward(welcomeReward);
   };
 
   const handleSpinComplete = async () => {
@@ -211,6 +243,9 @@ function App() {
           </div>
         );
 
+      case 'login':
+        return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+
       case 'splash':
         return <SplashScreen onComplete={handleSplashComplete} />;
 
@@ -221,7 +256,7 @@ function App() {
         return <SpinningWheel onSpinComplete={handleSpinComplete} reward={reward} />;
 
       case 'rewardForm':
-        return <RewardForm reward={reward} onSubmit={handleFormSubmit} loading={loading} error={error} />;
+        return <RewardForm reward={reward} onSubmit={handleFormSubmit} loading={loading} error={error} telegramUserData={telegramUserData} />;
 
       case 'success':
         return <SuccessScreen redirectUrl={redirectUrl} autoRedirectSeconds={3} />;

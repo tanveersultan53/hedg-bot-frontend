@@ -21,7 +21,7 @@ const CongratulationsModal = ({ reward, onClaim }) => {
         <p className="modal-reward">
           You've unlocked{' '}
           <span className="reward-highlight">
-            "{reward?.name || 'Risk-free credit'}{reward?.description ? ` ${reward.description}` : ''}"
+            "{reward?.name || 'Welcome Bonus'}{reward?.description ? ` - ${reward.description}` : ''}"
           </span>
         </p>
 
