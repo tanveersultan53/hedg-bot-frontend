@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import WebApp from '@twa-dev/sdk';
 import './App.css';
 
@@ -21,49 +21,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [telegramUserData, setTelegramUserData] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [customer, setCustomer] = useState(null);
 
-  useEffect(() => {
-    console.log('🎯 App mounted - Initializing Telegram WebApp...');
-
-    // Initialize Telegram WebApp
-    WebApp.ready();
-    WebApp.expand();
-
-    console.log('✅ WebApp.ready() and WebApp.expand() called');
-    console.log('🌐 Current URL:', window.location.href);
-
-    // Check authentication status first
-    checkAuthentication();
-  }, []);
-
-  const checkAuthentication = async () => {
-    console.log('🔐 Checking authentication status...');
-
-    try {
-      // Try to get existing customer or autologin
-      const authenticated = await authService.checkAuthStatus();
-
-      if (authenticated) {
-        console.log('✅ User is authenticated');
-        const customerData = authService.getCustomer();
-        setCustomer(customerData);
-        setIsAuthenticated(true);
-
-        // Proceed with onboarding
-        initializeOnboarding();
-      } else {
-        console.log('❌ User is not authenticated - showing login');
-        setCurrentFrame('login');
-      }
-    } catch (err) {
-      console.error('❌ Error checking authentication:', err);
-      setCurrentFrame('login');
-    }
-  };
-
-  const initializeOnboarding = async () => {
+  const initializeOnboarding = useCallback(async () => {
     try {
       console.log('🚀 Initializing onboarding...');
       console.log('📱 Telegram WebApp Object:', WebApp);
@@ -131,7 +94,46 @@ function App() {
       console.log('⚠️ API Error - Showing splash screen for retry');
       setCurrentFrame('splash');
     }
-  };
+  }, []);
+
+  const checkAuthentication = useCallback(async () => {
+    console.log('🔐 Checking authentication status...');
+
+    try {
+      // Try to get existing customer or autologin
+      const authenticated = await authService.checkAuthStatus();
+
+      if (authenticated) {
+        console.log('✅ User is authenticated');
+        const customerData = authService.getCustomer();
+        setCustomer(customerData);
+        setIsAuthenticated(true);
+
+        // Proceed with onboarding
+        initializeOnboarding();
+      } else {
+        console.log('❌ User is not authenticated - showing login');
+        setCurrentFrame('login');
+      }
+    } catch (err) {
+      console.error('❌ Error checking authentication:', err);
+      setCurrentFrame('login');
+    }
+  }, [initializeOnboarding]);
+
+  useEffect(() => {
+    console.log('🎯 App mounted - Initializing Telegram WebApp...');
+
+    // Initialize Telegram WebApp
+    WebApp.ready();
+    WebApp.expand();
+
+    console.log('✅ WebApp.ready() and WebApp.expand() called');
+    console.log('🌐 Current URL:', window.location.href);
+
+    // Check authentication status first
+    checkAuthentication();
+  }, [checkAuthentication]);
 
   const handleLoginSuccess = async (response) => {
     console.log('✅ Login successful:', response);
