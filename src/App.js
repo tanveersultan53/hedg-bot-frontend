@@ -105,12 +105,25 @@ function App() {
       console.error('   Error message:', err.message);
       console.error('   Error response:', err.response?.data);
 
-      // If there's an API error, show error to user instead of continuing
-      if (err.response?.data?.error) {
-        setError(err.response.data.error);
-      } else {
-        setError('Unable to connect to server. Please try again.');
+      // If there's an API error, show error to user - combine error and details
+      let errorMessage = 'Unable to connect to server. Please try again.';
+
+      if (err.response?.data) {
+        const errorData = err.response.data;
+
+        // Check if we have error and details from backend
+        if (errorData.error && errorData.details) {
+          errorMessage = `${errorData.error}: ${errorData.details}`;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.details) {
+          errorMessage = errorData.details;
+        }
       }
+
+      setError(errorMessage);
 
       console.log('⚠️ API Error - Showing splash screen for retry');
       setCurrentFrame('splash');
@@ -181,10 +194,24 @@ function App() {
       console.error('   Error message:', err.message);
       console.error('   Error response:', err.response?.data);
 
-      // Set error message to display to user
-      const errorMessage = err.response?.data?.message ||
-                          err.response?.data?.error ||
-                          'Unable to complete signup. Please try again.';
+      // Set error message to display to user - combine error and details
+      let errorMessage = 'Unable to complete signup. Please try again.';
+
+      if (err.response?.data) {
+        const errorData = err.response.data;
+
+        // Check if we have error and details from backend
+        if (errorData.error && errorData.details) {
+          errorMessage = `${errorData.error}: ${errorData.details}`;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.details) {
+          errorMessage = errorData.details;
+        }
+      }
+
       setError(errorMessage);
 
       // Stay on the form page - do NOT navigate to success screen
