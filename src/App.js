@@ -10,8 +10,6 @@ import SuccessScreen from './pages/SuccessScreen';
 
 import { onboardingAPI } from './services/api';
 import authService from './services/authService';
-import { createSignUpPayload } from './services/webtrader';
-import { webTradingAPI } from './services/webTraderApi';
 
 function App() {
   // State management
@@ -61,20 +59,18 @@ function App() {
         last_name: telegramUser.last_name,
         language_code: telegramUser.language_code,
         photo_url: telegramUser.photo_url,
+        phone_number: telegramUser.phone_number,
       });
 
       // Check if user exists
-      const response = await onboardingAPI.checkUser(telegramUser.id);
+      const response = await authService.checkUser(telegramUser.id);
 
-      if (response.data.status === 'existing_user') {
-        // Existing user: establish session
-        try {
-          await authService.telegramAutologin(telegramUser.id);
-          console.log('Session established successfully');
-        } catch (autologinErr) {
-          console.warn('Autologin failed:', autologinErr);
+      if (response.status === 'existing_user') {
+        // Existing user: session is already established by checkUser
+        console.log('Existing user found, session established');
+        if (response.user?.redirect_url) {
+          setRedirectUrl(response.user.redirect_url);
         }
-        setRedirectUrl(response.data.redirect_url);
       }
 
       setCurrentFrame('splash');
@@ -111,23 +107,11 @@ function App() {
 
     try {
       if (telegramUserData) {
-        // Step 1: Create Web Trader signup payload
-        const signUpPayload = createSignUpPayload(completeData);
-        console.log('Calling Web Trader API...');
+        // Call backend API - it will handle Web Trader API internally
+        console.log('Calling backend signup API...');
+        const backendResponse = await onboardingAPI.signup(completeData);
 
-        // Step 2: Call Web Trader API to create customer
-        const webTraderResponse = await webTradingAPI.signup(signUpPayload);
-        console.log('Web Trader signup successful:', webTraderResponse.data);
-
-        // Step 3: Call backend API to save user data
-        console.log('Calling backend API...');
-        const backendResponse = await onboardingAPI.signup({
-          ...completeData,
-          webtrader_customer_id: webTraderResponse.data.id,
-          webtrader_response: webTraderResponse.data,
-        });
-
-        console.log('Backend signup successful:', backendResponse.data);
+        console.log('Signup successful:', backendResponse.data);
         setRedirectUrl(backendResponse.data.redirect_url);
       } else {
         // Demo mode: mock signup

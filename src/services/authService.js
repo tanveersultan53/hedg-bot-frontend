@@ -13,104 +13,46 @@ const authAPI = axios.create({
 
 /**
  * Authentication Service
- * Handles login, autologin, and session management
+ * Handles user authentication and session management
  */
 const authService = {
   /**
-   * Login with email and password
-   * @param {string} email - User email
-   * @param {string} password - User password
-   * @param {string} brandId - Brand ID (default: HEDG)
-   * @param {string} systemId - System ID (default: web)
-   * @returns {Promise} - Response with customer data and session info
+   * Check if user exists by telegram_id
+   * @param {string} telegramId - Telegram user ID
+   * @returns {Promise} - Response with user status and data
    */
-  login: async (email, password, brandId = 'HEDG', systemId = 'web') => {
+  checkUser: async (telegramId) => {
     try {
-      const response = await authAPI.post('/login', {
-        email,
-        password,
-        brand_id: brandId,
-        system_id: systemId,
-      });
-
-      // Store access token in localStorage if provided
-      if (response.data.access_token) {
-        localStorage.setItem('access_token', response.data.access_token);
-      }
-
-      // Store customer data
-      if (response.data.customer) {
-        localStorage.setItem('customer', JSON.stringify(response.data.customer));
-      }
-
-      return response.data;
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      throw error;
-    }
-  },
-
-  /**
-   * Auto-login using existing auth_id cookie
-   * @param {string} brandId - Brand ID (default: HEDG)
-   * @param {string} systemId - System ID (default: web)
-   * @returns {Promise} - Response with customer data and session info
-   */
-  autologin: async (brandId = 'HEDG', systemId = 'web') => {
-    try {
-      const response = await authAPI.post('/autologin', {
-        brand_id: brandId,
-        system_id: systemId,
-      });
-
-      // Store customer data
-      if (response.data.customer) {
-        localStorage.setItem('customer', JSON.stringify(response.data.customer));
-      }
-
-      return response.data;
-    } catch (error) {
-      console.error('Autologin error:', error.response?.data || error.message);
-      throw error;
-    }
-  },
-
-  /**
-   * Telegram-based auto-login using telegram_id
-   * @param {number} telegramId - Telegram user ID
-   * @returns {Promise} - Response with access token and user data
-   */
-  telegramAutologin: async (telegramId) => {
-    try {
-      const response = await authAPI.post('/telegram-autologin', {
+      const response = await authAPI.post('/check-user', {
         telegram_id: telegramId,
       });
 
-      // Store access token if provided
-      if (response.data.access_token) {
-        localStorage.setItem('access_token', response.data.access_token);
-      }
-
-      // Store user data
-      if (response.data.user) {
-        localStorage.setItem('customer', JSON.stringify(response.data.user));
+      // If existing user, store access token and redirect URL
+      if (response.data.status === 'existing_user' && response.data.user) {
+        if (response.data.user.access_token) {
+          localStorage.setItem('access_token', response.data.user.access_token);
+        }
+        if (response.data.user.redirect_url) {
+          localStorage.setItem('redirect_url', response.data.user.redirect_url);
+        }
+        // Store user data
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
       return response.data;
     } catch (error) {
-      console.error('Telegram autologin error:', error.response?.data || error.message);
+      console.error('Check user error:', error.response?.data || error.message);
       throw error;
     }
   },
 
   /**
-   * Logout - Clear local storage and cookies
+   * Logout - Clear local storage
    */
   logout: () => {
     localStorage.removeItem('access_token');
-    localStorage.removeItem('customer');
-    // Note: Cookies (sid, auth_id) are httpOnly and can't be cleared from frontend
-    // They will be cleared by the backend or expire naturally
+    localStorage.removeItem('redirect_url');
+    localStorage.removeItem('user');
   },
 
   /**
@@ -118,18 +60,17 @@ const authService = {
    * @returns {boolean} - True if user has valid session
    */
   isAuthenticated: () => {
-    // Check if we have customer data in localStorage
-    const customer = localStorage.getItem('customer');
-    return !!customer;
+    const user = localStorage.getItem('user');
+    return !!user;
   },
 
   /**
-   * Get current customer data
-   * @returns {Object|null} - Customer object or null
+   * Get current user data
+   * @returns {Object|null} - User object or null
    */
-  getCustomer: () => {
-    const customer = localStorage.getItem('customer');
-    return customer ? JSON.parse(customer) : null;
+  getUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   },
 
   /**
@@ -141,24 +82,11 @@ const authService = {
   },
 
   /**
-   * Check authentication status on app load
-   * Attempts autologin if auth_id cookie exists
-   * @returns {Promise<boolean>} - True if authenticated
+   * Get redirect URL
+   * @returns {string|null} - Redirect URL or null
    */
-  checkAuthStatus: async () => {
-    // First check if we already have customer data
-    if (authService.isAuthenticated()) {
-      return true;
-    }
-
-    // Try autologin (will work if auth_id cookie exists)
-    try {
-      await authService.autologin();
-      return true;
-    } catch (error) {
-      // Autologin failed - user needs to login manually
-      return false;
-    }
+  getRedirectUrl: () => {
+    return localStorage.getItem('redirect_url');
   },
 };
 

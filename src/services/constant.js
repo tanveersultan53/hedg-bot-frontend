@@ -1,7 +1,0 @@
-BASE_URL_PRODUCTION="https://api.hedg.com"
-BASE_REDIRECT_URL_PRODUCTION="https://trade.hedg.com"
-DEFAULT_BRAND_ID="HEDG"
-DEFAULT_SYSTEM_ID="web"
-DEFAULT_LOGIN_TYPE_ID="regular"
-HTTP_HEADER_NAME="x-channel-token"
-HTTP_HEADER_VALUE="019ae3b9-ea5f-75cf-a262-264b772dcb2d"
