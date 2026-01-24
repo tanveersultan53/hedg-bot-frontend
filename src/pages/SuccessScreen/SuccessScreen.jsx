@@ -1,26 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import WebApp from '@twa-dev/sdk';
 import './SuccessScreen.css';
 
-const SuccessScreen = ({ redirectUrl, autoRedirectSeconds = 3 }) => {
-  const [countdown, setCountdown] = useState(autoRedirectSeconds);
+const SuccessScreen = ({ redirectUrl }) => {
+  const handleLaunchPlatform = () => {
+    // Open WebTrader in external browser if user explicitly wants it
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          window.location.href = redirectUrl;
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [redirectUrl]);
-
-  const handleManualRedirect = () => {
-    window.location.href = redirectUrl;
+  const handleClose = () => {
+    // Close the Telegram Mini App
+    WebApp.close();
   };
 
   return (
@@ -45,29 +36,24 @@ const SuccessScreen = ({ redirectUrl, autoRedirectSeconds = 3 }) => {
         </div>
 
         {/* Title */}
-        <h1 className="success-title">You're all set</h1>
+        <h1 className="success-title">You're all set!</h1>
 
         {/* Description */}
         <p className="success-description">
-          Our VIP representative will contact you shortly to guide you further.
+          Your account has been created successfully. Our VIP representative will contact you shortly.
         </p>
 
-        {/* Countdown */}
-        {countdown > 0 && (
-          <p className="redirect-countdown">
-            Redirecting in {countdown} second{countdown !== 1 ? 's' : ''}...
-          </p>
+        {/* Close button - primary action */}
+        <button className="launch-button" onClick={handleClose}>
+          Done
+        </button>
+
+        {/* Optional: Launch platform link */}
+        {redirectUrl && (
+          <button className="continue-link" onClick={handleLaunchPlatform}>
+            Open Web Platform
+          </button>
         )}
-
-        {/* Launch button */}
-        <button className="launch-button" onClick={handleManualRedirect}>
-          Launch Platform
-        </button>
-
-        {/* Continue link */}
-        <button className="continue-link" onClick={handleManualRedirect}>
-          Continue exploring
-        </button>
       </div>
     </div>
   );

@@ -10,59 +10,50 @@ import SuccessScreen from './pages/SuccessScreen';
 
 import { onboardingAPI } from './services/api';
 import authService from './services/authService';
+import { createSignUpPayload } from './services/webtrader';
+import { webTradingAPI } from './services/webTraderApi';
 
 function App() {
-  console.log('🎬 App component loaded');
-
-  const [currentFrame, setCurrentFrame] = useState('loading'); // loading, splash, wheelPrompt, spinning, rewardForm, success
+  // State management
+  const [currentFrame, setCurrentFrame] = useState('loading');
   const [reward, setReward] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [telegramUserData, setTelegramUserData] = useState(null);
 
+  // Initialize Telegram WebApp on mount
   useEffect(() => {
-    console.log('🎯 App mounted - Initializing Telegram WebApp...');
-
-    // Initialize Telegram WebApp
     WebApp.ready();
     WebApp.expand();
-
-    console.log('✅ WebApp.ready() and WebApp.expand() called');
-    console.log('🌐 Current URL:', window.location.href);
-
-    // SIMPLIFIED: Just initialize onboarding directly (Telegram data IS the authentication)
     initializeOnboarding();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Helper: Parse error messages from API responses
+  const parseErrorMessage = (err, defaultMessage) => {
+    if (!err.response?.data) return defaultMessage;
+
+    const errorData = err.response.data;
+    if (errorData.error && errorData.details) {
+      return `${errorData.error}: ${errorData.details}`;
+    }
+    return errorData.error || errorData.message || errorData.details || defaultMessage;
+  };
+
+  // Initialize onboarding flow
   const initializeOnboarding = async () => {
     try {
-      console.log('🚀 Initializing onboarding...');
-      console.log('📱 Telegram WebApp Object:', WebApp);
-      console.log('📊 WebApp.initDataUnsafe:', WebApp.initDataUnsafe);
-
       const telegramUser = WebApp.initDataUnsafe?.user;
 
-      console.log('👤 Telegram User Data:', telegramUser);
-
+      // Demo mode (no Telegram user)
       if (!telegramUser) {
-        // Fallback for testing outside Telegram - DEMO MODE
-        console.log('🎮 Demo Mode: Running without Telegram');
-        console.log('📝 No API calls will be made');
-        console.log('✅ Full flow will work with mock data');
-        // Show splash screen for demo mode
+        console.log('Demo Mode: Running without Telegram');
         setCurrentFrame('splash');
         return;
       }
 
-      console.log('✅ Telegram user found!');
-      console.log('   ID:', telegramUser.id);
-      console.log('   Username:', telegramUser.username);
-      console.log('   First Name:', telegramUser.first_name);
-      console.log('   Last Name:', telegramUser.last_name);
-
-      // Store Telegram user data in state
+      // Store Telegram user data
       setTelegramUserData({
         telegram_id: telegramUser.id,
         telegram_username: telegramUser.username,
@@ -72,156 +63,89 @@ function App() {
         photo_url: telegramUser.photo_url,
       });
 
-      // SIMPLIFIED: Just check if user exists (backend auto-authenticates based on telegram_id)
-      console.log('📤 Checking if user exists...');
+      // Check if user exists
       const response = await onboardingAPI.checkUser(telegramUser.id);
 
-      console.log('📥 API Response:', response.data);
-
       if (response.data.status === 'existing_user') {
-        // Existing user - establish session with Web Trader
-        console.log('🔄 Existing user detected - establishing session...');
-
+        // Existing user: establish session
         try {
-          // Call telegram-autologin to get fresh session and cookies
-          console.log('🔐 Calling telegram-autologin for session...');
           await authService.telegramAutologin(telegramUser.id);
-          console.log('✅ Session established successfully');
+          console.log('Session established successfully');
         } catch (autologinErr) {
-          console.warn('⚠️ Telegram autologin failed, continuing with redirect:', autologinErr);
-          // Continue even if autologin fails - check-user already returned valid data
+          console.warn('Autologin failed:', autologinErr);
         }
-
-        // Redirect to platform
-        console.log('🔗 Redirect URL:', response.data.redirect_url);
-        window.location.href = response.data.redirect_url;
-      } else {
-        // New user - start onboarding (show splash screen)
-        console.log('🆕 New user detected - starting onboarding flow');
-        setCurrentFrame('splash');
+        setRedirectUrl(response.data.redirect_url);
       }
+
+      setCurrentFrame('splash');
     } catch (err) {
-      console.error('❌ Error initializing onboarding:', err);
-      console.error('   Error message:', err.message);
-      console.error('   Error response:', err.response?.data);
-
-      // If there's an API error, show error to user - combine error and details
-      let errorMessage = 'Unable to connect to server. Please try again.';
-
-      if (err.response?.data) {
-        const errorData = err.response.data;
-
-        // Check if we have error and details from backend
-        if (errorData.error && errorData.details) {
-          errorMessage = `${errorData.error}: ${errorData.details}`;
-        } else if (errorData.error) {
-          errorMessage = errorData.error;
-        } else if (errorData.message) {
-          errorMessage = errorData.message;
-        } else if (errorData.details) {
-          errorMessage = errorData.details;
-        }
-      }
-
-      setError(errorMessage);
-
-      console.log('⚠️ API Error - Showing splash screen for retry');
+      setError(parseErrorMessage(err, 'Unable to connect to server. Please try again.'));
       setCurrentFrame('splash');
     }
   };
 
-  const handleSplashComplete = async () => {
-    console.log('✅ Splash complete - moving to wheel prompt');
+  // Frame navigation handlers
+  const handleSplashComplete = () => {
     setCurrentFrame('wheelPrompt');
   };
 
-  const handleSpin = async () => {
-    console.log('🎡 Spinning wheel...');
+  const handleSpin = () => {
     setCurrentFrame('spinning');
-
-    // Always set reward to "Welcome Bonus" since spinner always stops there
-    const welcomeReward = { name: 'Welcome Bonus', description: '$50 bonus' };
-    console.log('🎁 Reward selected:', welcomeReward);
-    setReward(welcomeReward);
+    setReward({ name: 'Welcome Bonus', description: '$50 bonus' });
   };
 
-  const handleSpinComplete = async () => {
-    console.log('✅ Spin complete - moving to form');
+  const handleSpinComplete = () => {
     setCurrentFrame('rewardForm');
   };
 
+  // Form submission handler
   const handleFormSubmit = async (formData) => {
-    console.log('📝 Form submission started...');
-    console.log('   Form data:', formData);
-    console.log('   Telegram user data:', telegramUserData);
-    console.log('   Reward:', reward);
     setLoading(true);
     setError(null);
 
-    // SIMPLIFIED: Combine ALL data for one signup call
-    // Backend will auto-create full_name from first_name + last_name
     const completeData = {
       ...formData,
-      ...(telegramUserData || {}), // Telegram data
-      reward: reward, // Include reward
+      ...(telegramUserData || {}),
+      reward: reward,
     };
-
-    console.log('📦 Complete signup data:', completeData);
 
     try {
       if (telegramUserData) {
-        // Call simplified signup endpoint
-        console.log('📤 Calling signup API...');
-        const response = await onboardingAPI.signup(completeData);
+        // Step 1: Create Web Trader signup payload
+        const signUpPayload = createSignUpPayload(completeData);
+        console.log('Calling Web Trader API...');
 
-        console.log('📥 Signup response:', response.data);
-        console.log('🔗 Redirect URL:', response.data.redirect_url);
-        setRedirectUrl(response.data.redirect_url);
+        // Step 2: Call Web Trader API to create customer
+        const webTraderResponse = await webTradingAPI.signup(signUpPayload);
+        console.log('Web Trader signup successful:', webTraderResponse.data);
+
+        // Step 3: Call backend API to save user data
+        console.log('Calling backend API...');
+        const backendResponse = await onboardingAPI.signup({
+          ...completeData,
+          webtrader_customer_id: webTraderResponse.data.id,
+          webtrader_response: webTraderResponse.data,
+        });
+
+        console.log('Backend signup successful:', backendResponse.data);
+        setRedirectUrl(backendResponse.data.redirect_url);
       } else {
-        // Demo mode - use mock redirect URL
-        console.log('🎮 Demo mode: Signup with complete data:', completeData);
+        // Demo mode: mock signup
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const mockUrl = 'https://hedg.com/platform';
-        console.log('🔗 Mock redirect URL:', mockUrl);
-        setRedirectUrl(mockUrl);
+        setRedirectUrl('https://hedg.com/platform');
       }
 
-      console.log('✅ Moving to success screen');
       setCurrentFrame('success');
     } catch (err) {
-      console.error('❌ Error during signup:', err);
-      console.error('   Error message:', err.message);
-      console.error('   Error response:', err.response?.data);
-
-      // Set error message to display to user - combine error and details
-      let errorMessage = 'Unable to complete signup. Please try again.';
-
-      if (err.response?.data) {
-        const errorData = err.response.data;
-
-        // Check if we have error and details from backend
-        if (errorData.error && errorData.details) {
-          errorMessage = `${errorData.error}: ${errorData.details}`;
-        } else if (errorData.error) {
-          errorMessage = errorData.error;
-        } else if (errorData.message) {
-          errorMessage = errorData.message;
-        } else if (errorData.details) {
-          errorMessage = errorData.details;
-        }
-      }
-
-      setError(errorMessage);
-
-      // Stay on the form page - do NOT navigate to success screen
-      console.log('⚠️ Staying on form due to signup error');
+      console.error('Signup error:', err);
+      setError(parseErrorMessage(err, 'Unable to complete signup. Please try again.'));
     } finally {
       setLoading(false);
     }
   };
 
+  // Render current frame
   const renderFrame = () => {
-    console.log('🖼️ Rendering frame:', currentFrame);
     switch (currentFrame) {
       case 'loading':
         return (
@@ -256,10 +180,16 @@ function App() {
         return <SpinningWheel onSpinComplete={handleSpinComplete} reward={reward} />;
 
       case 'rewardForm':
-        return <RewardForm reward={reward} onSubmit={handleFormSubmit} loading={loading} error={error} telegramUserData={telegramUserData} />;
+        return <RewardForm
+          reward={reward}
+          onSubmit={handleFormSubmit}
+          loading={loading}
+          error={error}
+          telegramUserData={telegramUserData}
+        />;
 
       case 'success':
-        return <SuccessScreen redirectUrl={redirectUrl} autoRedirectSeconds={3} />;
+        return <SuccessScreen redirectUrl={redirectUrl} />;
 
       default:
         return <SplashScreen onComplete={handleSplashComplete} />;
@@ -271,7 +201,7 @@ function App() {
       {error && (
         <div className="error-banner">
           <p>{error}</p>
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={() => setError(null)}>×</button>
         </div>
       )}
       {renderFrame()}

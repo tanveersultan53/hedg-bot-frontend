@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
-  baseURL: `${API_URL}/api/onboarding`,
+  baseURL: `${API_URL}/api/auth`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -23,5 +23,6 @@ export const onboardingAPI = {
     return api.post('/signup', userData);
   },
 };
+
 
 export default api;
