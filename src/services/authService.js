@@ -28,15 +28,14 @@ const authService = {
       });
 
       // If existing user, store access token and redirect URL
-      if (response.data.status === 'existing_user' && response.data.user) {
-        if (response.data.user.access_token) {
-          localStorage.setItem('access_token', response.data.user.access_token);
+      if (response.data.status === 'existing_user') {
+        if (response.data.redirect_url) {
+          localStorage.setItem('redirect_url', response.data.redirect_url);
         }
-        if (response.data.user.redirect_url) {
-          localStorage.setItem('redirect_url', response.data.user.redirect_url);
+        // Store user data if available
+        if (response.data.user) {
+          localStorage.setItem('user', JSON.stringify(response.data.user));
         }
-        // Store user data
-        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
       return response.data;

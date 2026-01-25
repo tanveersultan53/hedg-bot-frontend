@@ -42,6 +42,10 @@ function App() {
   // Initialize onboarding flow
   const initializeOnboarding = async () => {
     try {
+      console.log('🚀 Initializing onboarding...');
+      console.log('WebApp object:', WebApp);
+      console.log('WebApp.initDataUnsafe:', WebApp.initDataUnsafe);
+
       const telegramUser = WebApp.initDataUnsafe?.user;
 
       // Demo mode (no Telegram user)
@@ -63,13 +67,31 @@ function App() {
       });
 
       // Check if user exists
+      console.log('Checking user with telegram_id:', telegramUser.id);
       const response = await authService.checkUser(telegramUser.id);
+      console.log('Check user response:', response);
 
       if (response.status === 'existing_user') {
         // Existing user: session is already established by checkUser
         console.log('Existing user found, session established');
-        if (response.user?.redirect_url) {
-          setRedirectUrl(response.user.redirect_url);
+        if (response.redirect_url) {
+          console.log('Redirecting to:', response.redirect_url);
+          // Show redirecting message
+          setCurrentFrame('loading');
+          setRedirectUrl(response.redirect_url);
+          // Small delay to show loading state
+          await new Promise(resolve => setTimeout(resolve, 500));
+          // Redirect existing user immediately
+          try {
+            console.log('Attempting WebApp.openLink...');
+            WebApp.openLink(response.redirect_url);
+          } catch (linkError) {
+            console.warn('WebApp.openLink failed, using window.location:', linkError);
+            window.location.href = response.redirect_url;
+          }
+          return; // Stop further execution
+        } else {
+          console.warn('No redirect_url in response for existing user');
         }
       }
 
@@ -108,20 +130,38 @@ function App() {
     try {
       if (telegramUserData) {
         // Call backend API - it will handle Web Trader API internally
-        console.log('Calling backend signup API...');
+        console.log('Calling backend signup API with data:', completeData);
         const backendResponse = await onboardingAPI.signup(completeData);
 
         console.log('Signup successful:', backendResponse.data);
-        setRedirectUrl(backendResponse.data.redirect_url);
+
+        if (backendResponse.data.redirect_url) {
+          console.log('Redirecting to:', backendResponse.data.redirect_url);
+          setRedirectUrl(backendResponse.data.redirect_url);
+          // Small delay to show success state
+          await new Promise(resolve => setTimeout(resolve, 500));
+          // Redirect user immediately after successful signup
+          try {
+            console.log('Attempting WebApp.openLink...');
+            WebApp.openLink(backendResponse.data.redirect_url);
+          } catch (linkError) {
+            console.warn('WebApp.openLink failed, using window.location:', linkError);
+            window.location.href = backendResponse.data.redirect_url;
+          }
+          return; // Stop further execution
+        } else {
+          console.warn('No redirect_url in signup response');
+          setCurrentFrame('success');
+        }
       } else {
         // Demo mode: mock signup
         await new Promise(resolve => setTimeout(resolve, 1000));
         setRedirectUrl('https://hedg.com/platform');
+        setCurrentFrame('success');
       }
-
-      setCurrentFrame('success');
     } catch (err) {
       console.error('Signup error:', err);
+      console.error('Error details:', err.response?.data);
       setError(parseErrorMessage(err, 'Unable to complete signup. Please try again.'));
     } finally {
       setLoading(false);
@@ -150,7 +190,9 @@ function App() {
               height: '50px',
               animation: 'spin 1s linear infinite'
             }}></div>
-            <p style={{ marginTop: '20px', fontSize: '16px' }}>Loading...</p>
+            <p style={{ marginTop: '20px', fontSize: '16px' }}>
+              {redirectUrl ? 'Redirecting to trading platform...' : 'Loading...'}
+            </p>
           </div>
         );
 
