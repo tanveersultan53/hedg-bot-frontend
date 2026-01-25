@@ -81,14 +81,9 @@ function App() {
           setRedirectUrl(response.redirect_url);
           // Small delay to show loading state
           await new Promise(resolve => setTimeout(resolve, 500));
-          // Redirect existing user immediately
-          try {
-            console.log('Attempting WebApp.openLink...');
-            WebApp.openLink(response.redirect_url);
-          } catch (linkError) {
-            console.warn('WebApp.openLink failed, using window.location:', linkError);
-            window.location.href = response.redirect_url;
-          }
+          // Redirect within Telegram WebView
+          console.log('Redirecting within Telegram...');
+          window.location.href = response.redirect_url;
           return; // Stop further execution
         } else {
           console.warn('No redirect_url in response for existing user');
@@ -140,14 +135,9 @@ function App() {
           setRedirectUrl(backendResponse.data.redirect_url);
           // Small delay to show success state
           await new Promise(resolve => setTimeout(resolve, 500));
-          // Redirect user immediately after successful signup
-          try {
-            console.log('Attempting WebApp.openLink...');
-            WebApp.openLink(backendResponse.data.redirect_url);
-          } catch (linkError) {
-            console.warn('WebApp.openLink failed, using window.location:', linkError);
-            window.location.href = backendResponse.data.redirect_url;
-          }
+          // Redirect within Telegram WebView after successful signup
+          console.log('Redirecting within Telegram...');
+          window.location.href = backendResponse.data.redirect_url;
           return; // Stop further execution
         } else {
           console.warn('No redirect_url in signup response');
