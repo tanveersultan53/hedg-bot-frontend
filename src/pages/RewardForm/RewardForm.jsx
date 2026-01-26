@@ -13,6 +13,7 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
     country_code: '',
   });
 
+  const [fullPhoneNumber, setFullPhoneNumber] = useState(''); // Store full number with country code for input
   const [errors, setErrors] = useState({});
   const [detectedCountry, setDetectedCountry] = useState('us');
 
@@ -20,11 +21,13 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
   useEffect(() => {
     if (telegramUserData) {
       console.log('📝 Auto-populating form with Telegram data:', telegramUserData);
+      const phoneNumber = telegramUserData.phone_number || '';
+      setFullPhoneNumber(phoneNumber);
       setFormData(prev => ({
         ...prev,
         first_name: telegramUserData.first_name || '',
         last_name: telegramUserData.last_name || '',
-        phone: telegramUserData.phone_number || '',
+        phone: phoneNumber,
       }));
     }
   }, [telegramUserData]);
@@ -62,7 +65,10 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
   };
 
   const handlePhoneChange = (value, country) => {
-    // Remove the country code from the phone number
+    // Store the full phone number for the input display
+    setFullPhoneNumber(value);
+
+    // Remove the country code from the phone number for submission
     const phoneWithoutCountryCode = value.replace(country.dialCode, '');
 
     setFormData(prev => ({
@@ -160,7 +166,7 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
             <label htmlFor="phone">Phone Number</label>
             <PhoneInput
               country={detectedCountry}
-              value={formData.phone}
+              value={fullPhoneNumber}
               onChange={handlePhoneChange}
               inputClass={errors.phone ? 'error' : ''}
               containerClass="phone-input-container"
