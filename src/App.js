@@ -32,11 +32,21 @@ function App() {
   const parseErrorMessage = (err, defaultMessage) => {
     if (!err.response?.data) return defaultMessage;
 
-    const errorData = err.response.data;
+    // Handle nested error structure (data.res contains actual error)
+    const errorData = err.response.data.res || err.response.data;
+
+    // If details is an object with a message property
+    if (errorData.details && typeof errorData.details === 'object') {
+      const detailsMessage = errorData.details.message || JSON.stringify(errorData.details);
+      return errorData.message || detailsMessage;
+    }
+
+    // If details is a string
     if (errorData.error && errorData.details) {
       return `${errorData.error}: ${errorData.details}`;
     }
-    return errorData.error || errorData.message || errorData.details || defaultMessage;
+
+    return errorData.message || errorData.error || errorData.details || defaultMessage;
   };
 
   // Initialize onboarding flow
