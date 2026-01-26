@@ -8,7 +8,7 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
     first_name: '',
     last_name: '',
     email: '',
-    mobile: '',
+    phone: '',
     country_id: '',
     country_code: '',
   });
@@ -24,7 +24,7 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
         ...prev,
         first_name: telegramUserData.first_name || '',
         last_name: telegramUserData.last_name || '',
-        mobile: telegramUserData.phone_number || '',
+        phone: telegramUserData.phone_number || '',
       }));
     }
   }, [telegramUserData]);
@@ -67,12 +67,12 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
 
     setFormData(prev => ({
       ...prev,
-      mobile: phoneWithoutCountryCode,
+      phone: phoneWithoutCountryCode,
       country_code: `+${country.dialCode}`,
       country_id: country.countryCode.toUpperCase()
     }));
-    if (errors.mobile) {
-      setErrors(prev => ({ ...prev, mobile: '' }));
+    if (errors.phone) {
+      setErrors(prev => ({ ...prev, phone: '' }));
     }
   };
 
@@ -93,8 +93,8 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
       newErrors.email = 'Email is invalid';
     }
 
-    if (!formData.mobile) {
-      newErrors.mobile = 'Phone number is required';
+    if (!formData.phone) {
+      newErrors.phone = 'Phone number is required';
     }
 
     setErrors(newErrors);
@@ -160,9 +160,9 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
             <label htmlFor="phone">Phone Number</label>
             <PhoneInput
               country={detectedCountry}
-              value={formData.mobile}
+              value={formData.phone}
               onChange={handlePhoneChange}
-              inputClass={errors.mobile ? 'error' : ''}
+              inputClass={errors.phone ? 'error' : ''}
               containerClass="phone-input-container"
               buttonClass="phone-dropdown"
               enableSearch={true}
@@ -170,8 +170,8 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
               autoFormat={true}
               preferredCountries={['us', 'gb', 'ca', 'au']}
             />
-            {errors.mobile && (
-              <span className="error-message">{errors.mobile}</span>
+            {errors.phone && (
+              <span className="error-message">{errors.phone}</span>
             )}
           </div>
 
