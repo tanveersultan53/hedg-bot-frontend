@@ -62,9 +62,12 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
   };
 
   const handlePhoneChange = (value, country) => {
+    // Remove the country code from the phone number
+    const phoneWithoutCountryCode = value.replace(country.dialCode, '');
+
     setFormData(prev => ({
       ...prev,
-      mobile: value,
+      mobile: phoneWithoutCountryCode,
       country_code: `+${country.dialCode}`,
       country_id: country.countryCode.toUpperCase()
     }));
