@@ -117,8 +117,8 @@ function App() {
     setError(null);
 
     const completeData = {
-      ...formData,
       ...(telegramUserData || {}),
+      ...formData,
       reward: reward,
     };
 
