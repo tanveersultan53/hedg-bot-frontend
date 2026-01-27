@@ -92,15 +92,15 @@ function App() {
           // Small delay to show loading state
           await new Promise(resolve => setTimeout(resolve, 500));
           // Redirect within Telegram WebView
-         for (const [name, value] of Object.entries(response.cookies)) {
-          console.log(`Setting cookie ${name}=${value}`);
-          
-          // Create cookie string
-          let cookieStr = `${name}=${value}; path=/; domain=hedg.com; max-age=${60*60*24*365}; Secure; SameSite=Lax`;
-          
-          // Set cookie in browser
-          document.cookie = cookieStr;
-      }
+        for (const [name, value] of Object.entries(response.cookies)) {
+                  console.log(`Setting cookie ${name}=${value}`);
+                  // Create cookie string
+                  let cookieStr = `${name}=${value}; path=/; domain=hedg.com; max-age=${60*60*24*365}; Secure; SameSite=Lax`;
+                  
+                  // Set cookie in browser
+                  document.cookie = cookieStr;
+          }
+          window.location.href = response.redirect_url;
           return; // Stop further execution
         } else {
           console.warn('No redirect_url in response for existing user');
