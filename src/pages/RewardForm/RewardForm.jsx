@@ -20,7 +20,6 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
   // Auto-populate first_name, last_name, and phone from Telegram if available
   useEffect(() => {
     if (telegramUserData) {
-      console.log('📝 Auto-populating form with Telegram data:', telegramUserData);
       const phoneNumber = telegramUserData.phone_number || '';
       setFullPhoneNumber(phoneNumber);
       setFormData(prev => ({
@@ -43,7 +42,6 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
           setDetectedCountry(data.country_code.toLowerCase());
         }
       } catch (error) {
-        console.log('Could not detect country, using default (US)');
         // Fallback to US if detection fails
         setDetectedCountry('us');
       }

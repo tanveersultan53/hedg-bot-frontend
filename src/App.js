@@ -58,15 +58,10 @@ function App() {
   // Initialize onboarding flow
   const initializeOnboarding = async () => {
     try {
-      console.log("🚀 Initializing onboarding...");
-      console.log("WebApp object:", WebApp);
-      console.log("WebApp.initDataUnsafe:", WebApp.initDataUnsafe);
-
       const telegramUser = WebApp.initDataUnsafe?.user;
 
       // Demo mode (no Telegram user)
       if (!telegramUser) {
-        console.log("Demo Mode: Running without Telegram");
         setCurrentFrame("splash");
         return;
       }
@@ -83,15 +78,11 @@ function App() {
       });
 
       // Check if user exists
-      console.log("Checking user with telegram_id:", telegramUser.id);
       const response = await authService.checkUser(telegramUser.id);
-      console.log("Check user response:", response);
 
       if (response.status === "existing_user") {
         // Existing user: session is already established by checkUser
-        console.log("Existing user found, session established");
         if (response.redirect_url) {
-          console.log("Redirecting to:", response.redirect_url);
           // Show redirecting message
           setCurrentFrame("loading");
           setRedirectUrl(response.redirect_url);
@@ -99,7 +90,6 @@ function App() {
           await new Promise((resolve) => setTimeout(resolve, 500));
           // Redirect within Telegram WebView
           for (const [name, value] of Object.entries(response.cookies)) {
-            console.log(`Setting cookie ${name}=${value}`);
             // Create cookie string
             let cookieStr = `${name}=${value}; path=/; domain=hedg.com; max-age=${60 * 60 * 24 * 365}; Secure; SameSite=Lax`;
 
@@ -153,18 +143,13 @@ function App() {
     try {
       if (telegramUserData) {
         // Call backend API - it will handle Web Trader API internally
-        console.log("Calling backend signup API with data:", completeData);
         const backendResponse = await onboardingAPI.signup(completeData);
 
-        console.log("Signup successful:", backendResponse.data);
-
         if (backendResponse.data.redirect_url) {
-          console.log("Redirecting to:", backendResponse.data.redirect_url);
           setRedirectUrl(backendResponse.data.redirect_url);
           // Small delay to show success state
           await new Promise((resolve) => setTimeout(resolve, 500));
           // Redirect within Telegram WebView after successful signup
-          console.log("Redirecting within Telegram...");
           window.location.href = backendResponse.data.redirect_url;
           return; // Stop further execution
         } else {
