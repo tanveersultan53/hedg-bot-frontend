@@ -10,7 +10,14 @@ const WheelPrompt = ({ onSpin }) => {
       <div className="ellipse ellipse-42"></div>
       <div className="ellipse ellipse-44"></div>
 
-      <div style={{ textAlign: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         {/* Spinning Wheel */}
         <h1 className="page-title">You’re In</h1>
         <p className="page-subtitle">
