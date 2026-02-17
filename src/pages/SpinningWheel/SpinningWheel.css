@@ -358,7 +358,7 @@
   }
 
   .wheel-wrapper {
-    max-width: 280px;
+    max-width: 300px;
     margin-bottom: 30px;
   }
 
@@ -389,7 +389,7 @@
 /* Extra small devices */
 @media (max-width: 360px) {
   .wheel-wrapper {
-    max-width: 250px;
+    max-width: 280px;
   }
 
   .spin-text {

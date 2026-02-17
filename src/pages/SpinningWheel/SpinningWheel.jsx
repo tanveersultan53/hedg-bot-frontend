@@ -39,34 +39,35 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
   };
 
   return (
-    <div className="spinning-wheel-container">
-      {/* Background ellipses */}
+    <div className="splash-screen">
+      <div className="background-overlay"></div>
       <div className="ellipse ellipse-39"></div>
       <div className="ellipse ellipse-42"></div>
       <div className="ellipse ellipse-44"></div>
 
-      {/* Spinning Wheel */}
-      <h1 className="page-title">Hurrah !</h1>
-      <p className="page-subtitle">Spining...</p>
+      <div>
+        {/* Spinning Wheel */}
+        <h1 className="page-title">Hurrah !</h1>
+        <p className="page-subtitle">{spinning ? "Spinning..." : "Congratulations.."}</p>
 
-      <div className="wheel-wrapper">
-        <img
-          src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
-          alt="Pointer"
-          className="wheel-pointer"
-        />
-        <div className="wheel-main">
-          {/* Radial gradient glow overlay */}
-          <div className="wheel-glow"></div>
-          <img src="/assets/ring.png" alt="ring" className="ring" />
+        <div className="wheel-wrapper">
           <img
-            src="/assets/spiner.png"
-            alt="spinner"
-            className={`spiner ${spinning ? "spinning" : "stopped"}`}
-            style={{ transform: `rotate(${rotation}deg)` }}
+            src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
+            alt="Pointer"
+            className="wheel-pointer"
           />
+          <div className="wheel-main">
+            {/* Radial gradient glow overlay */}
+            <div className="wheel-glow"></div>
+            <img src="/assets/ring.png" alt="ring" className="ring" />
+            <img
+              src="/assets/spiner.png"
+              alt="spinner"
+              className={`spiner ${spinning ? "spinning" : "stopped"}`}
+              style={{ transform: `rotate(${rotation}deg)` }}
+            />
 
-          {/* <div className="wheel-segment segment-1">
+            {/* <div className="wheel-segment segment-1">
             <div className="segment-content">
               <div className="segment-icon">🔓</div>
               <span className="segment-text">Upgraded Access</span>
@@ -105,11 +106,12 @@ const SpinningWheel = ({ onSpinComplete, reward }) => {
           <div className="wheel-center">
             <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
           </div> */}
+          </div>
         </div>
-      </div>
 
-      <div className="spin-footer">
-        <p className="wait-text">Good luck!</p>
+        <div className="spin-footer">
+          <p className="wait-text">Good luck!</p>
+        </div>
       </div>
 
       {/* Congratulations Modal */}

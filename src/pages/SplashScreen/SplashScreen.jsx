@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import './SplashScreen.css';
+import React, { useEffect } from "react";
+import "./SplashScreen.css";
 
 const SplashScreen = ({ onComplete }) => {
   useEffect(() => {
@@ -20,11 +20,7 @@ const SplashScreen = ({ onComplete }) => {
       <div className="logo-container">
         {/* <div className="spinner-ring"></div> */}
         <div className="logo-wrapper">
-          <img
-            src="/logo.svg"
-            alt="H"
-            className="hedg-logo-img"
-          />
+          <img src="/logo.svg" alt="H" className="hedg-logo-img" />
           <div className="logo-text">EDG</div>
         </div>
       </div>

@@ -3,24 +3,28 @@ import "./WheelPrompt.css";
 
 const WheelPrompt = ({ onSpin }) => {
   return (
-    <div className="wheel-prompt-simple">
+    <div className="splash-screen">
       {/* Background ellipses */}
-      <div className="ellipse-cyan"></div>
-      <div className="ellipse-orange-bottom"></div>
-      <div className="ellipse-orange-top"></div>
+      <div className="background-overlay"></div>
+      <div className="ellipse ellipse-39"></div>
+      <div className="ellipse ellipse-42"></div>
+      <div className="ellipse ellipse-44"></div>
 
-      {/* Spinning Wheel */}
-      <h1 className="page-title">You’re In</h1>
-      <p className="page-subtitle">Spin the wheel to unlock your HEDG reward</p>
-      <div className="wheel-container">
-        <img
-          src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
-          alt="Pointer"
-          className="wheel-pointer-static"
-        />
-        <img src="/assets/ring.png" alt="ring" className="ring" />
-        <img src="/assets/spiner.png" alt="spinner" className="spiner" />
-        {/* <div className="wheel-static">
+      <div style={{ textAlign: "center" }}>
+        {/* Spinning Wheel */}
+        <h1 className="page-title">You’re In</h1>
+        <p className="page-subtitle">
+          Spin the wheel to unlock your HEDG reward
+        </p>
+        <div className="wheel-container">
+          <img
+            src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
+            alt="Pointer"
+            className="wheel-pointer-static"
+          />
+          <img src="/assets/ring.png" alt="ring" className="ring" />
+          <img src="/assets/spiner.png" alt="spinner" className="spiner" />
+          {/* <div className="wheel-static">
           <div className="wheel-inside"></div>
           <div className="wheel-glow"></div>
           <div className="wheel-segment segment-1">
@@ -65,12 +69,13 @@ const WheelPrompt = ({ onSpin }) => {
             </div>
           </div>
         </div> */}
-      </div>
+        </div>
 
-      {/* Spin Button */}
-      <button className="spin-btn" onClick={onSpin}>
-        Spin
-      </button>
+        {/* Spin Button */}
+        <button className="spin-btn" onClick={onSpin}>
+          Spin
+        </button>
+      </div>
     </div>
   );
 };
