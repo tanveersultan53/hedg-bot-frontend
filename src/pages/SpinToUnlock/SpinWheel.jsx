@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
 
 const segments = [
-  { label: "VIP Onboarding", color: "#4DB59E", textColor: "#fff" },
-  { label: "Risk-Free Credit", color: "#2D8E78", textColor: "#fff" },
-  { label: "Priority Support", color: "#4DB59E", textColor: "#fff" },
-  { label: "Fee Discounts", color: "#2D8E78", textColor: "#fff" },
-  { label: "Upgraded Acccess", color: "#4DB59E", textColor: "#fff" },
-  { label: "Welcome Bonus", color: "#2D8E78", textColor: "#fff" },
+  { label: "VIP Onboarding", color: "#4DB59E", textColor: "#fff", icon: "/assets/vip.svg" },
+  { label: "Risk-Free Credit", color: "#2D8E78", textColor: "#fff", icon: "/assets/risk-free.svg" },
+  { label: "Priority Support", color: "#4DB59E", textColor: "#fff", icon: "/assets/priority.svg" },
+  { label: "Fee Discounts", color: "#2D8E78", textColor: "#fff", icon: "/assets/discount.svg" },
+  { label: "Upgraded Acccess", color: "#4DB59E", textColor: "#fff", icon: "/assets/lock.svg" },
+  { label: "Welcome Bonus", color: "#2D8E78", textColor: "#fff", icon: "/assets/bonus.svg" },
 ];
 
 const SEGMENT_ANGLE = 360 / segments.length;
@@ -150,10 +150,23 @@ export default function SpinWheel() {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "40px",
+      }}
+    >
       <div style={styles.wheelWrapper}>
         {/* Pointer */}
-        <div style={styles.pointer} />
+        {/* <div style={styles.pointer} /> */}
+        <img
+          src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
+          alt="Pointer"
+          className="wheel-pointer-static"
+        />
 
         {/* Wheel SVG */}
         <svg style={styles.svg} viewBox="0 0 200 200">
@@ -185,6 +198,22 @@ export default function SpinWheel() {
             );
           })}
 
+          {/* Icons */}
+          {segments.map((seg, i) => {
+            const iconSize = 11;
+            return (
+              <image
+                key={`icon-${i}`}
+                href={seg.icon}
+                width={iconSize}
+                height={iconSize}
+                x={100 - iconSize / 2}
+                y={18}
+                transform={getLabelTransform(i, segments.length)}
+              />
+            );
+          })}
+
           {/* Labels */}
           {segments.map((seg, i) => {
             const words = seg.label.split(" ");
@@ -197,12 +226,12 @@ export default function SpinWheel() {
                 textAnchor="middle"
                 fill={seg.textColor}
                 fontWeight="700"
-                fontSize="8"
+                fontSize="7"
               >
-                <tspan x="100" y="30" dominantBaseline="middle">
+                <tspan x="100" y="36" dominantBaseline="middle">
                   {words[0]}
                 </tspan>
-                <tspan x="100" y="40" dominantBaseline="middle">
+                <tspan x="100" y="44" dominantBaseline="middle">
                   {words[1]}
                 </tspan>
               </text>
@@ -221,6 +250,10 @@ export default function SpinWheel() {
       </button>
 
       <div style={styles.result}>{result}</div> */}
+
+      <button className="spin-btn" onClick={spin}>
+        Spin
+      </button>
     </div>
   );
 }
