@@ -19,8 +19,7 @@ const CongratulationsModal = ({ reward, onClaim }) => {
         <p className="modal-reward">
           You've unlocked{" "}
           <span className="reward-highlight">
-            "{reward?.label || "Welcome Bonus"}
-            {reward?.description ? ` - ${reward.description}` : ""}"
+            "{reward?.label || "Welcome Bonus"} - $50 bonus "
           </span>
         </p>
 
