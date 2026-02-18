@@ -1,12 +1,42 @@
 import { useState, useRef } from "react";
 
 const segments = [
-  { label: "VIP Onboarding", color: "#4DB59E", textColor: "#fff", icon: "/assets/vip.svg" },
-  { label: "Risk-Free Credit", color: "#2D8E78", textColor: "#fff", icon: "/assets/risk-free.svg" },
-  { label: "Priority Support", color: "#4DB59E", textColor: "#fff", icon: "/assets/priority.svg" },
-  { label: "Fee Discounts", color: "#2D8E78", textColor: "#fff", icon: "/assets/discount.svg" },
-  { label: "Upgraded Acccess", color: "#4DB59E", textColor: "#fff", icon: "/assets/lock.svg" },
-  { label: "Welcome Bonus", color: "#2D8E78", textColor: "#fff", icon: "/assets/bonus.svg" },
+  {
+    label: "VIP Onboarding",
+    color: "#4DB59E",
+    textColor: "#fff",
+    icon: "/assets/vip.svg",
+  },
+  {
+    label: "Risk-Free Credit",
+    color: "#2D8E78",
+    textColor: "#fff",
+    icon: "/assets/risk-free.svg",
+  },
+  {
+    label: "Priority Support",
+    color: "#4DB59E",
+    textColor: "#fff",
+    icon: "/assets/priority.svg",
+  },
+  {
+    label: "Fee Discounts",
+    color: "#2D8E78",
+    textColor: "#fff",
+    icon: "/assets/discount.svg",
+  },
+  {
+    label: "Upgraded Acccess",
+    color: "#4DB59E",
+    textColor: "#fff",
+    icon: "/assets/lock.svg",
+  },
+  {
+    label: "Welcome Bonus",
+    color: "#2D8E78",
+    textColor: "#fff",
+    icon: "/assets/bonus.svg",
+  },
 ];
 
 const SEGMENT_ANGLE = 360 / segments.length;
@@ -92,8 +122,7 @@ export default function SpinWheel() {
       width: "100%",
       height: "100%",
       borderRadius: "50%",
-      boxShadow:
-        "0 0 0 6px #1a1a1a, 0 0 0 10px #333, 0 20px 60px rgba(0,0,0,0.7)",
+      boxShadow: "0 0 0 12px #5DBEA8",
       transform: `rotate(${rotation}deg)`,
       transition: spinning
         ? "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)"
