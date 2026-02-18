@@ -127,6 +127,7 @@ export default function SpinWheel() {
       transition: spinning
         ? "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)"
         : "none",
+      border: "5px solid white",
     },
     centerCap: {
       position: "absolute",
