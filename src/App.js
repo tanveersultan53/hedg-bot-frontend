@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import WebApp from "@twa-dev/sdk";
 import "./App.css";
 
 import SplashScreen from "./pages/SplashScreen";
-import WheelPrompt from "./pages/WheelPrompt";
-import SpinningWheel from "./pages/SpinningWheel";
 import RewardForm from "./pages/RewardForm";
 import SuccessScreen from "./pages/SuccessScreen";
 
 import { onboardingAPI } from "./services/api";
 import authService from "./services/authService";
+import SpinToUnlock from "./pages/SpinToUnlock";
 
 function App() {
   // State management
@@ -120,11 +119,6 @@ function App() {
     setCurrentFrame("wheelPrompt");
   };
 
-  const handleSpin = () => {
-    setCurrentFrame("spinning");
-    setReward({ name: "Welcome Bonus", description: "$50 bonus" });
-  };
-
   const handleSpinComplete = () => {
     setCurrentFrame("rewardForm");
   };
@@ -137,7 +131,10 @@ function App() {
     const completeData = {
       ...(telegramUserData || {}),
       ...formData,
-      reward: reward,
+      reward: {
+        name: reward?.label,
+        key: reward?.key,
+      },
     };
 
     try {
@@ -201,11 +198,13 @@ function App() {
         return <SplashScreen onComplete={handleSplashComplete} />;
 
       case "wheelPrompt":
-        return <WheelPrompt onSpin={handleSpin} />;
-
       case "spinning":
         return (
-          <SpinningWheel onSpinComplete={handleSpinComplete} reward={reward} />
+          <SpinToUnlock
+            onSpinComplete={handleSpinComplete}
+            setReward={setReward}
+            reward={reward}
+          />
         );
 
       case "rewardForm":

@@ -1,6 +1,4 @@
-import React from 'react';
-import './CongratulationsModal.css';
-
+import "./CongratulationsModal.css";
 const CongratulationsModal = ({ reward, onClaim }) => {
   return (
     <div className="congratulations-overlay">
@@ -19,15 +17,20 @@ const CongratulationsModal = ({ reward, onClaim }) => {
 
         {/* Reward description */}
         <p className="modal-reward">
-          You've unlocked{' '}
+          You've unlocked{" "}
           <span className="reward-highlight">
-            "{reward?.name || 'Welcome Bonus'}{reward?.description ? ` - ${reward.description}` : ''}"
+            "{reward?.label || "Welcome Bonus"}
+            {reward?.description ? ` - ${reward.description}` : ""}"
           </span>
         </p>
 
         {/* Reward image/icon placeholder */}
         <div className="reward-visual">
-          <img src="/assets/Image Enhancer-1767935863000 1.png" alt="Gift" className="reward-icon" />
+          <img
+            src="/assets/Image Enhancer-1767935863000 1.png"
+            alt="Gift"
+            className="reward-icon"
+          />
         </div>
 
         {/* Claim button */}

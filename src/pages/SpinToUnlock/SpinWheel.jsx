@@ -3,36 +3,42 @@ import { useState, useRef } from "react";
 const segments = [
   {
     label: "VIP Onboarding",
+    key: "vip_onboarding",
     color: "#4DB59E",
     textColor: "#fff",
     icon: "/assets/vip.svg",
   },
   {
     label: "Risk-Free Credit",
+    key: "risk_free_credit",
     color: "#2D8E78",
     textColor: "#fff",
     icon: "/assets/risk-free.svg",
   },
   {
     label: "Priority Support",
+    key: "priority_support",
     color: "#4DB59E",
     textColor: "#fff",
     icon: "/assets/priority.svg",
   },
   {
     label: "Fee Discounts",
+    key: "free_discounts",
     color: "#2D8E78",
     textColor: "#fff",
     icon: "/assets/discount.svg",
   },
   {
     label: "Upgraded Acccess",
+    key: "upgraded_Access",
     color: "#4DB59E",
     textColor: "#fff",
     icon: "/assets/lock.svg",
   },
   {
     label: "Welcome Bonus",
+    key: "welcome_bonus",
     color: "#2D8E78",
     textColor: "#fff",
     icon: "/assets/bonus.svg",
@@ -58,17 +64,14 @@ function getLabelTransform(index, total) {
   return `rotate(${angle},100,100)`;
 }
 
-export default function SpinWheel() {
+export default function SpinWheel({ setReward }) {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
-  const [result, setResult] = useState("");
-  const [showResult, setShowResult] = useState(false);
   const currentRotation = useRef(0);
 
   const spin = () => {
     if (spinning) return;
     setSpinning(true);
-    setShowResult(false);
 
     const extraSpins = (5 + Math.floor(Math.random() * 5)) * 360;
     const randomSegment = Math.floor(Math.random() * segments.length);
@@ -84,8 +87,7 @@ export default function SpinWheel() {
       const idx =
         Math.floor(((360 - normalised + 270) % 360) / SEGMENT_ANGLE) %
         segments.length;
-      setResult(`→ ${segments[idx].label}`);
-      setShowResult(true);
+      setReward && setReward(segments[idx + 1]);
     }, 4200);
   };
 
@@ -102,8 +104,6 @@ export default function SpinWheel() {
     },
     wheelWrapper: {
       position: "relative",
-      width: "380px",
-      height: "380px",
     },
     pointer: {
       position: "absolute",
@@ -117,6 +117,7 @@ export default function SpinWheel() {
       borderTop: "36px solid #fff",
       zIndex: 10,
       filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
+      visibility: "hidden",
     },
     svg: {
       width: "100%",
@@ -134,10 +135,9 @@ export default function SpinWheel() {
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      width: "52px",
-      height: "52px",
-      background: "#0f0f0f",
-      border: "4px solid #333",
+      width: "150px",
+      height: "150px",
+      background: "#00000026",
       borderRadius: "50%",
       zIndex: 5,
       display: "flex",
@@ -145,10 +145,13 @@ export default function SpinWheel() {
       justifyContent: "center",
     },
     centerDot: {
-      width: "16px",
-      height: "16px",
+      width: "120px",
+      height: "120px",
       background: "#fff",
       borderRadius: "50%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
     button: {
       marginTop: "2.5rem",
@@ -166,17 +169,6 @@ export default function SpinWheel() {
       boxShadow: "0 6px 24px rgba(255,255,255,0.12)",
       transition: "background 0.2s, color 0.2s, transform 0.1s",
     },
-    result: {
-      marginTop: "1.5rem",
-      fontSize: "1.3rem",
-      fontWeight: "700",
-      letterSpacing: "0.1em",
-      color: "#fff",
-      opacity: showResult ? 1 : 0,
-      transition: "opacity 0.5s ease",
-      minHeight: "2rem",
-      textTransform: "uppercase",
-    },
   };
 
   return (
@@ -189,9 +181,9 @@ export default function SpinWheel() {
         gap: "40px",
       }}
     >
-      <div style={styles.wheelWrapper}>
+      <div className="spin-wheel-wrapper" style={styles.wheelWrapper}>
         {/* Pointer */}
-        {/* <div style={styles.pointer} /> */}
+        <div style={styles.pointer} />
         <img
           src="/assets/fb15534c055241e249db244403b3ae373fa7e2e5.png"
           alt="Pointer"
@@ -270,16 +262,12 @@ export default function SpinWheel() {
         </svg>
 
         {/* Center cap */}
-        {/* <div style={styles.centerCap}>
-          <div style={styles.centerDot} />
-        </div> */}
+        <div style={styles.centerCap}>
+          <div style={styles.centerDot}>
+            <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
+          </div>
+        </div>
       </div>
-
-      {/* <button style={styles.button} onClick={spin} disabled={spinning}>
-        {spinning ? "Spinning..." : "Spin"}
-      </button>
-
-      <div style={styles.result}>{result}</div> */}
 
       <button className="spin-btn" onClick={spin}>
         Spin
