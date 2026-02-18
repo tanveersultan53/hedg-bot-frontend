@@ -135,8 +135,6 @@ export default function SpinWheel({ setReward }) {
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      width: "150px",
-      height: "150px",
       background: "#00000026",
       borderRadius: "50%",
       zIndex: 5,
@@ -145,8 +143,6 @@ export default function SpinWheel({ setReward }) {
       justifyContent: "center",
     },
     centerDot: {
-      width: "120px",
-      height: "120px",
       background: "#fff",
       borderRadius: "50%",
       display: "flex",
@@ -262,8 +258,8 @@ export default function SpinWheel({ setReward }) {
         </svg>
 
         {/* Center cap */}
-        <div style={styles.centerCap}>
-          <div style={styles.centerDot}>
+        <div className="wheel-center-cap" style={styles.centerCap}>
+          <div className="wheel-center-dot" style={styles.centerDot}>
             <img src="/logo.svg" alt="HEDG" className="wheel-logo" />
           </div>
         </div>
