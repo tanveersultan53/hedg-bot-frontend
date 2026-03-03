@@ -344,16 +344,21 @@
 }
 
 /* Spin Wheel Wrapper - responsive sizing */
+/* padding: 20px gives room for the 12px box-shadow + 5px border to render without clipping */
 .spin-wheel-wrapper {
-  width: 380px;
-  height: 380px;
+  width: 340px;
+  height: 340px;
+  padding: 20px;
+  box-sizing: content-box;
 }
 
 /* Tablet */
 @media (max-width: 768px) {
   .spin-wheel-wrapper {
-    width: 320px;
-    height: 320px;
+    width: 280px;
+    height: 280px;
+    padding: 20px;
+    box-sizing: content-box;
   }
 
   .wheel-center-cap {
@@ -375,8 +380,10 @@
 /* Mobile responsiveness */
 @media (max-width: 480px) {
   .spin-wheel-wrapper {
-    width: 280px;
-    height: 280px;
+    width: 240px;
+    height: 240px;
+    padding: 20px;
+    box-sizing: content-box;
   }
   .wheel-prompt-simple {
     padding: 20px 15px;
@@ -430,8 +437,10 @@
 /* Extra small devices */
 @media (max-width: 360px) {
   .spin-wheel-wrapper {
-    width: 240px;
-    height: 240px;
+    width: 200px;
+    height: 200px;
+    padding: 20px;
+    box-sizing: content-box;
   }
 
   .wheel-container {
