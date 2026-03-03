@@ -1,5 +1,9 @@
+import { useTranslation } from "react-i18next";
 import "./CongratulationsModal.css";
+
 const CongratulationsModal = ({ reward, onClaim }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="congratulations-overlay">
       <div className="congratulations-modal">
@@ -13,13 +17,17 @@ const CongratulationsModal = ({ reward, onClaim }) => {
         </div> */}
 
         {/* Congratulations text */}
-        <h2 className="modal-title">Congratulations!</h2>
+        <h2 className="modal-title">{t("CONGRATS_MODAL_TITLE")}</h2>
 
         {/* Reward description */}
         <p className="modal-reward">
-          You've unlocked{" "}
+          {t("CONGRATS_MODAL_REWARD_PREFIX")}{" "}
           <span className="reward-highlight">
-            "{reward?.label || "Welcome Bonus"} - $50 bonus "
+            "
+            {reward?.labelKey
+              ? t(reward.labelKey)
+              : t("CONGRATS_MODAL_REWARD_FALLBACK")}{" "}
+            {t("CONGRATS_MODAL_REWARD_SUFFIX")} "
           </span>
         </p>
 
@@ -34,11 +42,11 @@ const CongratulationsModal = ({ reward, onClaim }) => {
 
         {/* Claim button */}
         <button className="claim-button" onClick={onClaim}>
-          Claim your reward
+          {t("CONGRATS_MODAL_CLAIM_BUTTON")}
         </button>
 
         {/* Terms & Conditions */}
-        <p className="modal-terms">Terms & conditions apply</p>
+        <p className="modal-terms">{t("CONGRATS_MODAL_TERMS")}</p>
       </div>
     </div>
   );

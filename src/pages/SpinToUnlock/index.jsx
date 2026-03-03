@@ -1,9 +1,11 @@
 import SpinWheel from "./SpinWheel";
 import "../WheelPrompt/WheelPrompt.css";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import CongratulationsModal from "../SpinningWheel/CongratulationsModal";
 
 const SpinToUnlock = ({ onSpinComplete, setReward, reward }) => {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
 
   const handleShowModal = (reward) => {
@@ -28,10 +30,8 @@ const SpinToUnlock = ({ onSpinComplete, setReward, reward }) => {
           }}
         >
           {/* Spinning Wheel */}
-          <h1 className="page-title">You’re In</h1>
-          <p className="page-subtitle">
-            Spin the wheel to unlock your HEDG reward
-          </p>
+          <h1 className="page-title">{t("SPIN_TO_UNLOCK_TITLE")}</h1>
+          <p className="page-subtitle">{t("SPIN_TO_UNLOCK_SUBTITLE")}</p>
           <SpinWheel setReward={handleShowModal} />
         </div>
       </div>

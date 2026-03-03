@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm install i18next-http-backend --save)",
+      "Bash(npm install i18next-http-backend --save --legacy-peer-deps)"
     ]
   }
 }

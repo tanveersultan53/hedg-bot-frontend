@@ -9,9 +9,10 @@ import SuccessScreen from "./pages/SuccessScreen";
 import { onboardingAPI } from "./services/api";
 import authService from "./services/authService";
 import SpinToUnlock from "./pages/SpinToUnlock";
+import useLanguage from "./hooks/useLanguage";
 
 function App() {
-  // State management
+  const { language, changeLanguage } = useLanguage();
   const [currentFrame, setCurrentFrame] = useState("loading");
   const [reward, setReward] = useState(null);
   const [redirectUrl, setRedirectUrl] = useState(null);
@@ -228,6 +229,21 @@ function App() {
 
   return (
     <div className="App">
+      <div className="lang-toggle notranslate" translate="no">
+        <button
+          className={language === "ar" ? "active" : ""}
+          onClick={() => changeLanguage("ar")}
+        >
+          AR
+        </button>
+        <span className="lang-divider">|</span>
+        <button
+          className={language === "en" ? "active" : ""}
+          onClick={() => changeLanguage("en")}
+        >
+          EN
+        </button>
+      </div>
       {error && (
         <div className="error-banner">
           <p>{error}</p>

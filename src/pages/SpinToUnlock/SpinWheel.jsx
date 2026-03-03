@@ -1,43 +1,44 @@
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 const segments = [
   {
-    label: "VIP Onboarding",
+    labelKey: "SPIN_WHEEL_SEGMENT_VIP_ONBOARDING",
     key: "vip_onboarding",
     color: "#4DB59E",
     textColor: "#fff",
     icon: "/assets/vip.svg",
   },
   {
-    label: "Risk-Free Credit",
+    labelKey: "SPIN_WHEEL_SEGMENT_RISK_FREE_CREDIT",
     key: "risk_free_credit",
     color: "#2D8E78",
     textColor: "#fff",
     icon: "/assets/risk-free.svg",
   },
   {
-    label: "Priority Support",
+    labelKey: "SPIN_WHEEL_SEGMENT_PRIORITY_SUPPORT",
     key: "priority_support",
     color: "#4DB59E",
     textColor: "#fff",
     icon: "/assets/priority.svg",
   },
   {
-    label: "Fee Discounts",
+    labelKey: "SPIN_WHEEL_SEGMENT_FEE_DISCOUNTS",
     key: "free_discounts",
     color: "#2D8E78",
     textColor: "#fff",
     icon: "/assets/discount.svg",
   },
   {
-    label: "Upgraded Acccess",
+    labelKey: "SPIN_WHEEL_SEGMENT_UPGRADED_ACCESS",
     key: "upgraded_Access",
     color: "#4DB59E",
     textColor: "#fff",
     icon: "/assets/lock.svg",
   },
   {
-    label: "Welcome Bonus",
+    labelKey: "SPIN_WHEEL_SEGMENT_WELCOME_BONUS",
     key: "welcome_bonus",
     color: "#2D8E78",
     textColor: "#fff",
@@ -65,6 +66,7 @@ function getLabelTransform(index, total) {
 }
 
 export default function SpinWheel({ setReward }) {
+  const { t } = useTranslation();
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const currentRotation = useRef(0);
@@ -234,7 +236,7 @@ export default function SpinWheel({ setReward }) {
 
           {/* Labels */}
           {segments.map((seg, i) => {
-            const words = seg.label.split(" ");
+            const words = t(seg.labelKey).split(" ");
             return (
               <text
                 key={i}
@@ -266,7 +268,7 @@ export default function SpinWheel({ setReward }) {
       </div>
 
       <button className="spin-btn" onClick={spin}>
-        Spin
+        {t("SPIN_WHEEL_SPIN_BUTTON")}
       </button>
     </div>
   );

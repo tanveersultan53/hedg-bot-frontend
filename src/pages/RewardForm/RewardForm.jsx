@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import './RewardForm.css';
 
 const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -84,21 +86,21 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
     const newErrors = {};
 
     if (!formData.first_name.trim()) {
-      newErrors.first_name = 'First name is required';
+      newErrors.first_name = 'REWARD_FORM_FIRST_NAME_ERROR';
     }
 
     if (!formData.last_name.trim()) {
-      newErrors.last_name = 'Last name is required';
+      newErrors.last_name = 'REWARD_FORM_LAST_NAME_ERROR';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'REWARD_FORM_EMAIL_ERROR_REQUIRED';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'REWARD_FORM_EMAIL_ERROR_INVALID';
     }
 
     if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
+      newErrors.phone = 'REWARD_FORM_PHONE_ERROR';
     }
 
     setErrors(newErrors);
@@ -120,48 +122,48 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
       <div className="ellipse-orange-top"></div>
 
       {/* Main title */}
-      <h1 className="page-title">Claim Your Exclusive Reward Now</h1>
+      <h1 className="page-title">{t('REWARD_FORM_TITLE')}</h1>
 
       {/* Subtitle */}
-      <p className="page-subtitle">Fill your details to claim your reward</p>
+      <p className="page-subtitle">{t('REWARD_FORM_SUBTITLE')}</p>
 
       {/* Form container */}
       <div className="form-container">
         <form onSubmit={handleSubmit} className="reward-form">
           <div className="form-group">
-            <label htmlFor="first_name">First name</label>
+            <label htmlFor="first_name">{t('REWARD_FORM_FIRST_NAME_LABEL')}</label>
             <input
               type="text"
               id="first_name"
               name="first_name"
               value={formData.first_name}
               onChange={handleChange}
-              placeholder="First name"
+              placeholder={t('REWARD_FORM_FIRST_NAME_PLACEHOLDER')}
               className={errors.first_name ? 'error' : ''}
             />
             {errors.first_name && (
-              <span className="error-message">{errors.first_name}</span>
+              <span className="error-message">{t(errors.first_name)}</span>
             )}
           </div>
 
           <div className="form-group">
-            <label htmlFor="last_name">Last name</label>
+            <label htmlFor="last_name">{t('REWARD_FORM_LAST_NAME_LABEL')}</label>
             <input
               type="text"
               id="last_name"
               name="last_name"
               value={formData.last_name}
               onChange={handleChange}
-              placeholder="Last name"
+              placeholder={t('REWARD_FORM_LAST_NAME_PLACEHOLDER')}
               className={errors.last_name ? 'error' : ''}
             />
             {errors.last_name && (
-              <span className="error-message">{errors.last_name}</span>
+              <span className="error-message">{t(errors.last_name)}</span>
             )}
           </div>
 
           <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
+            <label htmlFor="phone">{t('REWARD_FORM_PHONE_LABEL')}</label>
             <PhoneInput
               country={detectedCountry}
               value={fullPhoneNumber}
@@ -170,28 +172,28 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
               containerClass="phone-input-container"
               buttonClass="phone-dropdown"
               enableSearch={true}
-              searchPlaceholder="Search country..."
+              searchPlaceholder={t('REWARD_FORM_PHONE_SEARCH_PLACEHOLDER')}
               autoFormat={true}
               preferredCountries={['us', 'gb', 'ca', 'au']}
             />
             {errors.phone && (
-              <span className="error-message">{errors.phone}</span>
+              <span className="error-message">{t(errors.phone)}</span>
             )}
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('REWARD_FORM_EMAIL_LABEL')}</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="linda@framcreative.com"
+              placeholder={t('REWARD_FORM_EMAIL_PLACEHOLDER')}
               className={errors.email ? 'error' : ''}
             />
             {errors.email && (
-              <span className="error-message">{errors.email}</span>
+              <span className="error-message">{t(errors.email)}</span>
             )}
           </div>
 
@@ -207,13 +209,13 @@ const RewardForm = ({ reward, onSubmit, loading, error, telegramUserData }) => {
             disabled={loading}
           >
             {loading ? (
-              <span className="loading-spinner">⏳ Processing...</span>
+              <span className="loading-spinner">⏳ {t('REWARD_FORM_SUBMIT_LOADING')}</span>
             ) : (
-              'Submit & Continue'
+              t('REWARD_FORM_SUBMIT_BUTTON')
             )}
           </button>
 
-          <p className="security-note">Your information is kept secure and confidential.</p>
+          <p className="security-note">{t('REWARD_FORM_SECURITY_NOTE')}</p>
         </form>
       </div>
     </div>
